@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sketra — Curated Canvases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --bg-cream: #F7F0E3;
+    --bg-warm: #EDE0CC;
+    --paper: #FBF6EC;
+    --sesame: #E8DBC0;
+    --bagel-gold: #C9A66B;
+    --bagel-toast: #8B6F47;
+    --bagel-crust: #5C4426;
+    --bagel-deep: #2D1F12;
+    --butter: #F2D58C;
+    --accent-coral: #D4774A;
+    --line: rgba(45, 31, 18, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-cream);
+    color: var(--bagel-deep);
+    overflow-x: hidden;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .font-display { font-family: 'Fraunces', serif; }
+
+  /* Layout Helpers */
+  .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .items-center { align-items: center; }
+  .items-end { align-items: flex-end; }
+  .justify-between { justify-content: space-between; }
+  .justify-center { justify-content: center; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .gap-4 { gap: 16px; }
+  .gap-6 { gap: 24px; }
+  .gap-8 { gap: 32px; }
+  .gap-12 { gap: 48px; }
+  .grid { display: grid; }
+  .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-cols-12 { grid-template-columns: repeat(12, 1fr); }
+  .hidden { display: none; }
+  .relative { position: relative; }
+  .absolute { position: absolute; }
+  .fixed { position: fixed; }
+  .text-center { text-align: center; }
+  .w-full { width: 100%; }
+  .h-full { height: 100%; }
+  .object-cover { object-fit: cover; }
+  .rounded-full { border-radius: 9999px; }
+  .rounded-xl { border-radius: 12px; }
+  .py-4 { padding-top: 16px; padding-bottom: 16px; }
+  .p-8 { padding: 32px; }
+  .mb-4 { margin-bottom: 16px; }
+  .mt-10 { margin-top: 40px; }
+  
+  @media (min-width: 768px) {
+    .md\:flex { display: flex; }
+    .md\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .md\:text-6xl { font-size: 3.75rem; }
+    .lg\:grid-cols-12 { grid-template-columns: repeat(12, 1fr); }
+    .lg\:col-span-5 { grid-column: span 5; }
+    .lg\:col-span-7 { grid-column: span 7; }
+    .lg\:block { display: block; }
+  }
+
+  /* Header */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(247, 240, 227, 0.85);
+    border-bottom: 1px solid var(--line);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; max-width: 1200px; margin: 0 auto;
+  }
+  .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--bagel-deep); cursor: pointer; }
+  .logo-text { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; }
+  nav { display: none; gap: 36px; }
+  @media (min-width: 768px) { nav { display: flex; } }
+  .nav-link { text-decoration: none; color: var(--bagel-deep); font-size: 14px; position: relative; cursor: pointer; background: none; border: none; font-family: 'Outfit', sans-serif; }
+  .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1.5px; background: var(--bagel-crust); transition: width 0.3s; }
+  .nav-link:hover::after { width: 100%; }
+  .header-actions { display: flex; gap: 20px; align-items: center; position: relative; }
+  .icon-btn { position: relative; background: none; border: none; cursor: pointer; color: var(--bagel-deep); font-size: 18px; }
+  .badge-count { position: absolute; top: -6px; right: -6px; background: var(--accent-coral); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; transform: scale(0); transition: transform 0.3s; }
+  .badge-count.show { transform: scale(1); }
+
+  /* User Auth Elements */
+  .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--bagel-gold), var(--accent-coral)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 500; font-size: 14px; cursor: pointer; border: none; transition: transform 0.3s; overflow: hidden; }
+  .user-avatar:hover { transform: scale(1.05); }
+  .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  
+  .user-menu { position: absolute; top: 120%; right: 0; width: 240px; background: var(--paper); border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15); border: 1px solid var(--line); padding: 16px; z-index: 60; opacity: 0; transform: translateY(10px); pointer-events: none; transition: all 0.3s; }
+  .user-menu.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .user-menu-header { display: flex; gap: 12px; align-items: center; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .user-menu-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--bagel-gold), var(--accent-coral)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 500; font-size: 16px; overflow: hidden; flex-shrink: 0; }
+  .user-menu-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .user-menu-info p { font-size: 14px; font-weight: 500; color: var(--bagel-deep); margin: 0; line-height: 1.2; }
+  .user-menu-info span { font-size: 12px; color: var(--bagel-toast); word-break: break-all; }
+  .user-menu-btn { width: 100%; text-align: left; background: none; border: none; padding: 8px; font-size: 14px; color: var(--bagel-crust); cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 8px; transition: background 0.2s; font-family: 'Outfit', sans-serif; }
+  .user-menu-btn:hover { background: var(--bg-warm); color: var(--accent-coral); }
+  .user-menu-btn.logout { color: var(--accent-coral); margin-top: 8px; border-top: 1px solid var(--line); padding-top: 12px; border-radius: 0; }
+
+  /* Hero */
+  .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 120px 0 60px; overflow: hidden; }
+  .paint-blob { position: absolute; border-radius: 50% 60% 40% 70% / 60% 40% 70% 50%; filter: blur(60px); opacity: 0.5; pointer-events: none; }
+  .hero-content { position: relative; z-index: 10; display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
+  @media (min-width: 1024px) { .hero-content { grid-template-columns: 7fr 5fr; } }
+  .hero-title { font-family: 'Fraunces', serif; font-size: 14vw; line-height: 0.92; letter-spacing: -0.03em; font-weight: 300; }
+  @media (min-width: 768px) { .hero-title { font-size: 10vw; } }
+  @media (min-width: 1024px) { .hero-title { font-size: 8.2vw; } }
+  .hero-title em { font-style: italic; font-weight: 300; color: var(--accent-coral); }
+  .hero-subtitle { margin-top: 40px; font-size: 18px; max-width: 420px; color: var(--bagel-crust); }
+  .btn-group { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 16px; }
+  
+  /* Buttons */
+  .btn-primary { background: var(--bagel-deep); color: var(--paper); padding: 16px 32px; border-radius: 9999px; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 12px; cursor: pointer; border: none; position: relative; overflow: hidden; font-family: 'Outfit', sans-serif; transition: background 0.3s; }
+  .btn-primary:hover { background: var(--accent-coral); }
+  .btn-outline { background: transparent; color: var(--bagel-deep); padding: 16px 32px; border-radius: 9999px; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border: 1px solid var(--bagel-crust); font-family: 'Outfit', sans-serif; transition: all 0.3s; }
+  .btn-outline:hover { background: var(--bagel-deep); color: var(--paper); }
+  .btn-outline.active { background: var(--accent-coral); color: white; border-color: var(--accent-coral); }
+  
+  /* Portrait Frame */
+  .portrait-frame { position: relative; padding: 16px; background: var(--paper); box-shadow: 0 30px 60px -20px rgba(45,31,18,0.4); z-index: 2; transform: rotate(2deg); display: none; }
+  @media (min-width: 1024px) { .portrait-frame { display: block; } }
+  .portrait-frame img { width: 100%; height: auto; aspect-ratio: 3/4; object-fit: cover; display: block; box-shadow: inset 0 0 80px rgba(45,31,18,0.15); }
+  .tape { position: absolute; width: 90px; height: 22px; background: rgba(242, 213, 140, 0.7); top: -8px; left: 50%; transform: translateX(-50%) rotate(-2deg); }
+
+  /* Marquee */
+  .marquee-section { padding: 20px 0; background: var(--bagel-deep); color: var(--paper); overflow: hidden; display: flex; border-top: 1px solid var(--bagel-deep); border-bottom: 1px solid var(--bagel-deep); }
+  .marquee { display: flex; animation: scrollX 30s linear infinite; white-space: nowrap; }
+  @keyframes scrollX { to { transform: translateX(-50%); } }
+  .marquee-content { display: flex; gap: 48px; padding-right: 48px; font-family: 'Fraunces', serif; font-size: 24px; font-style: italic; font-weight: 300; }
+
+  /* Artist Section */
+  .artist-section { padding: 100px 0; position: relative; overflow: hidden; }
+  .artist-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; position: relative; z-index: 10; }
+  @media (min-width: 1024px) { .artist-grid { grid-template-columns: 5fr 7fr; gap: 80px; } }
+  .artist-portrait { transform: rotate(-2deg); display: block; max-width: 500px; margin: 0 auto; }
+  .artist-portrait img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
+  .section-title { font-family: 'Fraunces', serif; font-size: 48px; font-weight: 300; line-height: 0.95; margin-bottom: 32px; }
+  @media (min-width: 768px) { .section-title { font-size: 72px; } }
+  .artist-text p { margin-bottom: 20px; font-size: 16px; color: var(--bagel-crust); max-width: 560px; }
+  .artist-quote { font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: var(--bagel-deep); margin: 20px 0; }
+  .artist-stats { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 420px; }
+  .stat-num { font-family: 'Fraunces', serif; font-size: 40px; font-weight: 300; }
+  .stat-label { font-size: 11px; letter-spacing: 0.15em; color: var(--bagel-toast); margin-top: 4px; text-transform: uppercase; }
+
+  /* Gallery */
+  .gallery-section { padding: 100px 0; background: var(--bg-warm); }
+  .gallery-header { display: flex; flex-direction: column; gap: 32px; margin-bottom: 48px; }
+  @media (min-width: 768px) { .gallery-header { flex-direction: row; justify-content: space-between; align-items: flex-end; } }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 48px; }
+  .chip { padding: 6px 14px; border: 1px solid var(--line); border-radius: 9999px; font-size: 12px; cursor: pointer; transition: all 0.3s; background: transparent; color: var(--bagel-deep); font-family: 'Outfit', sans-serif; }
+  .chip:hover, .chip.active { background: var(--bagel-deep); color: var(--paper); border-color: var(--bagel-deep); }
+  
+  .gallery-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 32px; }
+  @media (min-width: 768px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .painting-card { transition: transform 0.4s; position: relative; z-index: 2; cursor: pointer; }
+  .painting-card:hover { transform: translateY(-8px); }
+  .painting-frame { position: relative; overflow: hidden; background: linear-gradient(135deg, var(--sesame), var(--bagel-gold)); box-shadow: 0 20px 40px -20px rgba(45,31,18,0.35); aspect-ratio: 3/4; }
+  .painting-frame.landscape { aspect-ratio: 4/3; }
+  .painting-frame.square { aspect-ratio: 1/1; }
+  .painting-image { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.8s; pointer-events: none; }
+  .painting-card:hover .painting-image { transform: scale(1.05); }
+  
+  .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(45,31,18,0.4) 0%, transparent 50%); pointer-events: none; }
+  .card-num { position: absolute; top: 16px; left: 16px; font-family: 'Fraunces', serif; font-style: italic; font-size: 11px; color: var(--paper); letter-spacing: 0.1em; z-index: 2; pointer-events: none; }
+  .heart-btn { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; background: rgba(251, 246, 236, 0.9); color: var(--bagel-deep); backdrop-filter: blur(4px); z-index: 2; }
+  .heart-btn.active { background: var(--accent-coral); color: white; }
+  
+  .quick-actions { position: absolute; bottom: 16px; left: 16px; right: 16px; display: flex; gap: 8px; opacity: 0; transform: translateY(20px); transition: all 0.4s; z-index: 2; }
+  .painting-card:hover .quick-actions { opacity: 1; transform: translateY(0); }
+  .btn-bagel { background: rgba(251, 246, 236, 0.95); color: var(--bagel-deep); border: 1px solid var(--line); padding: 12px; border-radius: 9999px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; flex: 1; font-family: 'Outfit', sans-serif; transition: background 0.3s; }
+  .btn-bagel:hover { background: var(--bagel-deep); color: var(--paper); }
+  .btn-bagel.active { background: var(--accent-coral); color: white; border-color: var(--accent-coral); }
+  .btn-icon { width: 48px; height: 48px; padding: 0; display: flex; align-items: center; justify-content: center; flex: none; }
+  .btn-bagel i, .heart-btn i { pointer-events: none; }
+
+  .card-info { margin-top: 16px; display: flex; justify-content: space-between; gap: 16px; }
+  .card-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 300; pointer-events: none; }
+  .card-meta { font-size: 12px; color: var(--bagel-toast); margin-top: 4px; pointer-events: none; }
+  .card-price { font-family: 'Fraunces', serif; font-size: 24px; color: var(--accent-coral); font-weight: 300; pointer-events: none; }
+
+  /* Process Section */
+  .process-section { padding: 100px 0; }
+  .process-grid { display: grid; grid-template-columns: 1fr; gap: 32px; max-width: 1000px; margin: 0 auto; }
+  @media (min-width: 768px) { .process-grid { grid-template-columns: repeat(3, 1fr); } }
+  .process-card { text-align: center; padding: 32px; background: var(--paper); border-radius: 16px; }
+  .process-num { font-family: 'Fraunces', serif; font-size: 60px; font-weight: 300; color: var(--accent-coral); margin-bottom: 16px; }
+  .process-title { font-family: 'Fraunces', serif; font-size: 24px; margin-bottom: 12px; }
+  .process-text { font-size: 14px; color: var(--bagel-crust); }
+
+  /* Footer */
+  footer { background: var(--bagel-deep); color: var(--paper); padding: 80px 0 40px; }
+  .footer-grid { display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 64px; }
+  @media (min-width: 768px) { .footer-grid { grid-template-columns: 2fr 1fr; } }
+  .footer-title { font-family: 'Fraunces', serif; font-size: 48px; font-weight: 300; line-height: 1; }
+  .footer-title em { color: var(--butter); }
+  .news-form { display: flex; gap: 12px; border-bottom: 1px solid rgba(251,246,236,0.3); padding-bottom: 12px; width: 100%; }
+  .news-input { flex: 1; background: transparent; border: none; outline: none; color: var(--paper); font-family: 'Outfit', sans-serif; font-size: 16px; }
+  .news-btn { background: none; border: none; color: var(--butter); cursor: pointer; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .footer-bottom { border-top: 1px solid rgba(251,246,236,0.15); padding-top: 32px; display: flex; justify-content: space-between; font-size: 12px; opacity: 0.6; flex-wrap: wrap; gap: 16px; }
+
+  /* Drawers & Toast (Fixed) */
+  .overlay { position: fixed; inset: 0; z-index: 999; background: rgba(45,31,18,0.5); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 100vw; background: var(--paper); z-index: 1000; transform: translateX(100%); transition: transform 0.5s; display: flex; flex-direction: column; box-shadow: -20px 0 60px -20px rgba(45,31,18,0.35); }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header { padding: 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .close-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: none; cursor: pointer; color: var(--bagel-deep); display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+  .close-btn:hover { background: var(--bagel-deep); color: var(--paper); }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 24px; }
+  .drawer-footer { padding: 24px; border-top: 1px solid var(--line); background: var(--bg-warm); }
+  
+  /* Cart & Wishlist Items */
+  .cart-item { display: flex; gap: 12px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: stretch; }
+  .cart-item-clickable { display: flex; gap: 16px; flex: 1; cursor: pointer; transition: transform 0.3s; }
+  .cart-item-clickable:hover { transform: translateX(4px); }
+  .cart-item img { width: 90px; height: 90px; object-fit: cover; border-radius: 8px; background: var(--sesame); pointer-events: none; }
+  .cart-item-info { flex: 1; display: flex; flex-direction: column; pointer-events: none; }
+  .item-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; gap: 12px; }
+  .item-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 400; line-height: 1.2; }
+  .item-meta { font-size: 12px; color: var(--bagel-toast); margin-bottom: 2px; }
+  .item-price { font-family: 'Fraunces', serif; font-size: 18px; color: var(--accent-coral); font-weight: 400; margin-top: auto; padding-top: 8px; }
+  
+  .cart-item-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; justify-content: space-between; }
+  .remove-btn { background: none; border: none; color: var(--bagel-toast); cursor: pointer; font-size: 14px; padding: 4px; align-self: flex-end; }
+  .remove-btn:hover { color: var(--accent-coral); }
+  .item-action-btn { padding: 8px 12px; background: var(--bg-warm); color: var(--bagel-deep); border: 1px solid var(--line); border-radius: 9999px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .item-action-btn:hover { background: var(--bagel-deep); color: var(--paper); border-color: var(--bagel-deep); }
+  .item-action-btn i { pointer-events: none; }
+
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: var(--bagel-toast); padding: 40px 20px; }
+  .empty-state i { font-size: 32px; margin-bottom: 16px; opacity: 0.3; }
+  .empty-state p { font-family: 'Fraunces', serif; font-size: 20px; margin-bottom: 4px; color: var(--bagel-crust); }
+  .empty-state span { font-size: 14px; }
+  
+  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--bagel-deep); color: var(--paper); padding: 14px 24px; border-radius: 9999px; z-index: 4000; transition: transform 0.4s; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ===== BIG PREVIEW MODAL (Split Screen with Sticky Footer) ===== */
+  .preview-overlay { position: fixed; inset: 0; z-index: 2500; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+  .preview-overlay.open { opacity: 1; pointer-events: auto; }
+  .preview-backdrop { position: absolute; inset: 0; background: rgba(45,31,18,0.7); backdrop-filter: blur(16px); cursor: pointer; }
+  
+  .preview-modal { position: relative; background: var(--paper); border-radius: 24px; width: 100%; max-width: 1100px; height: 90vh; display: grid; grid-template-columns: 1fr; overflow: hidden; transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); z-index: 2; }
+  .preview-overlay.open .preview-modal { transform: scale(1); }
+  
+  @media (min-width: 900px) { .preview-modal { grid-template-columns: 1.3fr 1fr; } }
+  
+  .preview-image-side { background: var(--bg-warm); padding: 24px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .preview-image-side img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.3); pointer-events: none; }
+  
+  .preview-details-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+  .preview-scroll-area { flex: 1; overflow-y: auto; padding: 56px 40px 24px; }
+  
+  .preview-close { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); cursor: pointer; z-index: 20; display: flex; align-items: center; justify-content: center; color: var(--bagel-deep); transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .preview-close:hover { background: var(--accent-coral); color: white; transform: rotate(90deg) scale(1.1); border-color: var(--accent-coral); }
+  .preview-close i { pointer-events: none; }
+  
+  .preview-num { font-family: 'Fraunces', serif; font-style: italic; font-size: 12px; color: var(--bagel-toast); letter-spacing: 0.2em; margin-bottom: 16px; text-transform: uppercase; }
+  .preview-title { font-family: 'Fraunces', serif; font-size: 42px; font-weight: 300; line-height: 1; margin-bottom: 12px; color: var(--bagel-deep); }
+  .preview-meta { font-size: 14px; color: var(--bagel-toast); margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  .preview-desc { font-size: 15px; line-height: 1.7; color: var(--bagel-crust); margin-bottom: 32px; font-style: italic; }
+  .preview-price { font-family: 'Fraunces', serif; font-size: 36px; color: var(--accent-coral); font-weight: 300; margin-bottom: 0; }
+  
+  .preview-footer { padding: 24px 40px; background: var(--paper); border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
+  .preview-btn { width: 100%; padding: 16px; border-radius: 9999px; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; }
+  .preview-btn-primary { background: var(--bagel-deep); color: var(--paper); border: 1px solid var(--bagel-deep); }
+  .preview-btn-primary:hover { background: var(--accent-coral); border-color: var(--accent-coral); }
+  .preview-btn-outline { background: transparent; color: var(--bagel-deep); border: 1px solid var(--bagel-crust); }
+  .preview-btn-outline:hover { background: var(--bagel-deep); color: var(--paper); }
+  .preview-btn.active { background: var(--accent-coral); color: white; border-color: var(--accent-coral); }
+  .preview-btn i { pointer-events: none; }
+
+  .preview-scroll-area::-webkit-scrollbar { width: 6px; }
+  .preview-scroll-area::-webkit-scrollbar-track { background: transparent; }
+  .preview-scroll-area::-webkit-scrollbar-thumb { background: var(--sesame); border-radius: 3px; }
+
+  /* ===== AUTHENTICATION MODAL ===== */
+  .auth-overlay { position: fixed; inset: 0; z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+  .auth-overlay.open { opacity: 1; pointer-events: auto; }
+  .auth-backdrop { position: absolute; inset: 0; background: rgba(45,31,18,0.75); backdrop-filter: blur(16px); cursor: pointer; }
+  
+  .auth-modal { position: relative; background: var(--paper); border-radius: 24px; width: 100%; max-width: 900px; height: auto; max-height: 90vh; display: grid; grid-template-columns: 1fr; overflow: hidden; transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); z-index: 2; }
+  .auth-overlay.open .auth-modal { transform: scale(1); }
+  
+  @media (min-width: 768px) { .auth-modal { grid-template-columns: 1fr 1fr; } }
+  
+  .auth-visual-side { background: var(--bagel-deep); color: var(--paper); padding: 48px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; display: none; }
+  @media (min-width: 768px) { .auth-visual-side { display: flex; } }
+  .auth-visual-side::before { content: ''; position: absolute; width: 300px; height: 300px; background: var(--accent-coral); border-radius: 50%; filter: blur(80px); opacity: 0.3; top: -50px; right: -50px; }
+  .auth-visual-side h2 { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 300; line-height: 1.1; margin-bottom: 16px; position: relative; z-index: 2; }
+  .auth-visual-side p { font-size: 15px; line-height: 1.6; color: rgba(251,246,236,0.7); position: relative; z-index: 2; }
+  
+  .auth-form-side { padding: 48px 40px; display: flex; flex-direction: column; justify-content: center; }
+  .auth-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); cursor: pointer; z-index: 20; display: flex; align-items: center; justify-content: center; color: var(--bagel-deep); transition: all 0.3s; }
+  .auth-close:hover { background: var(--accent-coral); color: white; border-color: var(--accent-coral); }
+  
+  .auth-title { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 300; margin-bottom: 8px; color: var(--bagel-deep); }
+  .auth-subtitle { font-size: 14px; color: var(--bagel-toast); margin-bottom: 32px; }
+  .auth-error { font-size: 12px; color: #e53e3e; margin-bottom: 16px; min-height: 16px; text-align: center; }
+  
+  .oauth-btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 14px; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--bagel-deep); margin-bottom: 12px; }
+  .oauth-btn:hover { background: var(--bg-warm); border-color: var(--bagel-crust); }
+  
+  .auth-divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; color: var(--bagel-toast); font-size: 12px; }
+  .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  
+  .auth-input-group { margin-bottom: 16px; }
+  .auth-input-label { font-size: 12px; color: var(--bagel-toast); margin-bottom: 6px; display: block; }
+  .auth-input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-warm); color: var(--bagel-deep); font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s; }
+  .auth-input:focus { border-color: var(--accent-coral); }
+  
+  .auth-submit-btn { width: 100%; padding: 16px; border-radius: 12px; font-size: 14px; letter-spacing: 0.05em; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; border: none; background: var(--bagel-deep); color: var(--paper); margin-top: 8px; }
+  .auth-submit-btn:hover { background: var(--accent-coral); }
+  
+  .auth-switch { text-align: center; font-size: 13px; color: var(--bagel-toast); margin-top: 24px; }
+  .auth-switch button { background: none; border: none; color: var(--accent-coral); font-family: 'Outfit', sans-serif; font-weight: 500; cursor: pointer; padding: 0; margin-left: 4px; }
+  .auth-switch button:hover { text-decoration: underline; }
+
+  /* ===== LUXURY SETTINGS MODAL ===== */
+  .settings-card { position: relative; background: var(--paper); border-radius: 24px; width: 100%; max-width: 480px; padding: 48px 40px; box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); z-index: 2; text-align: center; }
+  .auth-overlay.open .settings-card { transform: scale(1); }
+  
+  .settings-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 300; color: var(--bagel-deep); margin-bottom: 8px; }
+  .settings-subtitle { font-size: 13px; color: var(--bagel-toast); margin-bottom: 32px; }
+  
+  .settings-avatar-wrapper { position: relative; width: 120px; height: 120px; margin: 0 auto 32px; cursor: pointer; }
+  .settings-avatar { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, var(--bagel-gold), var(--accent-coral)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 48px; overflow: hidden; box-shadow: 0 10px 30px -10px rgba(45,31,18,0.3); border: 3px solid var(--paper); transition: all 0.3s; }
+  .settings-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .settings-avatar-ring { position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--bagel-gold); pointer-events: none; }
+  .settings-avatar-overlay { position: absolute; inset: 0; border-radius: 50%; background: rgba(45,31,18,0.6); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; gap: 6px; opacity: 0; transition: opacity 0.3s; }
+  .settings-avatar-wrapper:hover .settings-avatar-overlay { opacity: 1; }
+
+  .settings-input-group { text-align: left; margin-bottom: 24px; }
+  .settings-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--line); padding: 12px 4px; font-family: 'Outfit', sans-serif; font-size: 16px; color: var(--bagel-deep); outline: none; transition: border-color 0.3s; }
+  .settings-input:focus { border-bottom-color: var(--accent-coral); }
+  .settings-input:read-only { opacity: 0.6; cursor: not-allowed; }
+  
+  .settings-save-wrapper { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); margin-top: 0; display: flex; flex-direction: column; gap: 12px; }
+  .settings-save-wrapper.is-visible { max-height: 200px; opacity: 1; margin-top: 16px; }
+  .settings-save-btn { width: 100%; padding: 16px; border-radius: 12px; font-size: 14px; letter-spacing: 0.05em; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; border: none; background: var(--bagel-deep); color: var(--paper); }
+  .settings-save-btn:hover { background: var(--accent-coral); }
+  .settings-discard-btn { width: 100%; padding: 12px; border-radius: 12px; font-size: 13px; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; border: none; background: transparent; color: var(--bagel-toast); }
+  .settings-discard-btn:hover { color: #e53e3e; }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="#top" class="logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="14" stroke="#2D1F12" stroke-width="1.5"/>
+        <circle cx="16" cy="16" r="5" fill="#D4774A"/>
+      </svg>
+      <span class="logo-text">Sketra</span>
+    </a>
+    <nav>
+      <a href="#gallery" class="nav-link">Gallery</a>
+      <a href="#artist" class="nav-link">The Artist</a>
+    </nav>
+    <div class="header-actions" id="headerActions">
+      <button class="icon-btn" data-action="open-drawer" data-target="wishlist">
+        <i class="fa-regular fa-heart"></i>
+        <span class="badge-count" id="wishlistCount">0</span>
+      </button>
+      <button class="icon-btn" data-action="open-drawer" data-target="cart">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="badge-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section id="top" class="hero">
+  <div class="paint-blob" style="background: var(--bagel-gold); width: 560px; height: 560px; top: 8%; left: -12%;"></div>
+  <div class="paint-blob" style="background: var(--accent-coral); width: 440px; height: 440px; bottom: 6%; right: -8%;"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div>
+        <h1 class="hero-title">Canvas<br>that hold<br><em>quiet hours.</em></h1>
+        <p class="hero-subtitle">A small, slow collection of original paintings by <span class="font-display" style="font-style: italic;">Pranusha</span> — pigments ground by hand, moments caught between breath and brush.</p>
+        <div class="btn-group">
+          <a href="#gallery" class="btn-primary">
+            <span>Wander the Gallery</span>
+            <i class="fa-solid fa-arrow-right" style="font-size: 12px;"></i>
+          </a>
+        </div>
+      </div>
+      <div class="portrait-frame" data-action="open-preview" data-id="8" style="cursor: pointer;">
+        <img src="https://picsum.photos/seed/art8/600/780.jpg" alt="Aurum painting - Price: ₹95,000">
+        <div class="tape"></div>
+        <div style="position: absolute; bottom: -24px; left: -24px; background: var(--paper); padding: 12px 20px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); transform: rotate(-3deg);">
+          <p style="font-family: 'Fraunces', serif; font-style: italic; font-size: 11px; color: var(--bagel-toast); letter-spacing: 0.1em;">N° 008 · 2024</p>
+          <p class="font-display" style="font-size: 18px;">Aurum</p>
+          <p style="font-family: 'Fraunces', serif; font-size: 14px; color: var(--accent-coral);">₹95,000</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-section">
+  <div class="marquee">
+    <div class="marquee-content">
+      <span>Hand-ground pigments</span><span>·</span>
+      <span>Signed originals</span><span>·</span>
+      <span>Worldwide shipping</span><span>·</span>
+      <span>Made in Chandigarh, India</span><span>·</span>
+      <span>Hand-ground pigments</span><span>·</span>
+      <span>Signed originals</span><span>·</span>
+      <span>Worldwide shipping</span><span>·</span>
+      <span>Made in Chandigarh, India</span><span>·</span>
+    </div>
+  </div>
+</div>
+
+<section id="artist" class="artist-section">
+  <div class="paint-blob" style="background: var(--sesame); width: 500px; height: 500px; top: 20%; right: -10%;"></div>
+  <div class="container">
+    <div class="artist-grid">
+      <div class="artist-portrait">
+        <div class="portrait-frame" style="display: block; transform: rotate(-2deg);">
+          <img src="https://picsum.photos/seed/pranusha-portrait/600/750.jpg" alt="Pranusha">
+        </div>
+      </div>
+      <div class="artist-text">
+        <div class="flex items-center gap-3" style="margin-bottom: 24px;">
+          <div style="height: 1px; width: 48px; background: var(--bagel-crust);"></div>
+          <span style="font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--bagel-toast);">The Artist</span>
+        </div>
+        <h2 class="section-title">Pranusha<br><em style="color: var(--accent-coral); font-weight: 300;">paints the in-between.</em></h2>
+        <p>The hour before dawn. The breath between sentences. The warmth of a window left open in October. Pranusha's paintings begin as a feeling she can't name — and end as something you'll recognize.</p>
+        <p>She works from a small studio in Chandigarh, India, using rich synthetic pigments and bold store-bought acrylics to capture vivid, modern emotions. Each canvas takes 1 month.</p>
+        <p class="artist-quote">"I'm not trying to paint what something looks like. I'm trying to paint what it feels like to remember it."</p>
+        <div class="artist-stats">
+          <div>
+            <p class="stat-num">06</p>
+            <p class="stat-label">Years<br>Painting</p>
+          </div>
+          <div>
+            <p class="stat-num">142</p>
+            <p class="stat-label">Originals<br>Sold</p>
+          </div>
+          <div>
+            <p class="stat-num">11</p>
+            <p class="stat-label">Solo<br>Shows</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery" class="gallery-section">
+  <div class="container">
+    <div class="gallery-header">
+      <div>
+        <div class="flex items-center gap-3" style="margin-bottom: 20px;">
+          <div style="height: 1px; width: 48px; background: var(--bagel-crust);"></div>
+          <span style="font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--bagel-toast);">The Collection</span>
+        </div>
+        <h2 class="section-title">The nine<br>wonders.</h2>
+      </div>
+      <p style="max-width: 320px; font-size: 14px; color: var(--bagel-crust);">Each painting is an original, framed in oak, signed by hand. Hover to peek at quick actions — or open the AI assistant for a guided wander.</p>
+    </div>
+
+    <div class="filters" id="filterChips">
+      <button class="chip active" data-filter="all">All Pieces</button>
+      <button class="chip" data-filter="calm">Calm</button>
+      <button class="chip" data-filter="warm">Warm</button>
+      <button class="chip" data-filter="bold">Bold</button>
+      <button class="chip" data-filter="minimal">Minimal</button>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h3 class="footer-title">Slow letters,<br><em>once a month.</em></h3>
+      <p style="font-size: 14px; opacity: 0.7; margin-top: 16px; max-width: 400px;">Studio notes, new pieces before they're listed, and the occasional recipe. No noise.</p>
+    </div>
+    <div style="display: flex; align-items: flex-end;">
+      <form id="newsletterForm" class="news-form">
+        <input type="email" required placeholder="your.email@studio.com" class="news-input">
+        <button type="submit" class="news-btn">Subscribe →</button>
+      </form>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 Sketra. All canvases original.</p>
+    <div class="flex gap-6">
+      <a href="#" style="color: inherit; text-decoration: none;">Instagram</a>
+      <a href="#" style="color: inherit; text-decoration: none;">Pinterest</a>
+    </div>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" data-action="close-drawers"></div>
+
+<aside class="drawer" id="cartDrawer">
+  <div class="drawer-header">
+    <div>
+      <p style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bagel-toast);">Your</p>
+      <h3 class="section-title" style="font-size: 28px; margin: 0;">Cart</h3>
+    </div>
+    <button class="close-btn" data-action="close-drawers"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="drawer-body" id="cartItems"></div>
+  <div class="drawer-footer">
+    <div class="flex justify-between items-end" style="margin-bottom: 16px;">
+      <span style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bagel-toast);">Subtotal</span>
+      <span class="section-title" style="font-size: 28px; margin: 0;" id="cartTotal">₹0</span>
+    </div>
+    <button class="btn-primary w-full" data-action="checkout" style="justify-content: center; width: 100%;"><span>Checkout</span></button>
+  </div>
+</aside>
+
+<aside class="drawer" id="wishlistDrawer">
+  <div class="drawer-header">
+    <div>
+      <p style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bagel-toast);">Your</p>
+      <h3 class="section-title" style="font-size: 28px; margin: 0;">Wishlist</h3>
+    </div>
+    <button class="close-btn" data-action="close-drawers"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="drawer-body" id="wishlistItems"></div>
+  <div class="drawer-footer">
+    <button class="btn-outline w-full" data-action="move-all-to-cart" style="width: 100%; text-align: center; justify-content: center;">Move All to Cart</button>
+  </div>
+</aside>
+
+<div class="preview-overlay" id="previewOverlay">
+  <div class="preview-backdrop" data-action="close-preview"></div>
+  <div class="preview-modal">
+    <button class="preview-close" data-action="close-preview" aria-label="Close preview">
+      <i class="fa-solid fa-xmark" style="font-size: 18px;"></i>
+    </button>
+    <div class="preview-image-side">
+      <img id="previewImg" src="" alt="">
+    </div>
+    <div class="preview-details-side">
+      <div class="preview-scroll-area" id="previewScrollArea"></div>
+      <div class="preview-footer" id="previewFooter"></div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-backdrop" data-action="close-auth"></div>
+  <div class="auth-modal">
+    <button class="auth-close" data-action="close-auth" aria-label="Close auth">
+      <i class="fa-solid fa-xmark" style="font-size: 18px;"></i>
+    </button>
+    <div class="auth-visual-side">
+      <h2 id="authVisualTitle">Begin your collection.</h2>
+      <p id="authVisualText">Sign in to save your favorite pieces, track your orders, and bring a quiet hour into your home.</p>
+    </div>
+    <div class="auth-form-side">
+      <h2 class="auth-title" id="authTitle">Welcome back</h2>
+      <p class="auth-subtitle" id="authSubtitle">Sign in to continue your collection.</p>
+      <div class="auth-error" id="authError"></div>
+      
+      <button class="oauth-btn" data-action="oauth-google">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>
+        Continue with Google
+      </button>
+      <button class="oauth-btn" data-action="oauth-apple">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"></path></svg>
+        Continue with Apple
+      </button>
+
+      <div class="auth-divider">OR</div>
+
+      <form id="authForm">
+        <div class="auth-input-group" id="nameInputGroup" style="display: none;">
+          <input type="text" class="auth-input" id="authName" placeholder="Full name">
+        </div>
+        <div class="auth-input-group">
+          <input type="email" class="auth-input" id="authEmail" placeholder="Email address" required>
+        </div>
+        <div class="auth-input-group">
+          <input type="password" class="auth-input" id="authPassword" placeholder="Password" required>
+        </div>
+        <button type="submit" class="auth-submit-btn" id="authSubmitBtn">Sign In</button>
+      </form>
+
+      <p class="auth-switch">
+        <span id="authSwitchText">Don't have an account?</span>
+        <button type="button" data-action="toggle-auth-mode" id="authSwitchBtn">Sign up</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="auth-overlay" id="settingsOverlay">
+  <div class="auth-backdrop" data-action="close-settings"></div>
+  <div class="settings-card">
+    <button class="auth-close" data-action="close-settings" aria-label="Close settings">
+      <i class="fa-solid fa-xmark" style="font-size: 18px;"></i>
+    </button>
+    <h2 class="settings-title">Account Settings</h2>
+    <p class="settings-subtitle">Update your profile picture and username.</p>
+    
+    <div class="settings-avatar-wrapper" onclick="document.getElementById('profilePicInput').click()">
+      <div class="settings-avatar" id="settingsProfilePic"></div>
+      <div class="settings-avatar-ring"></div>
+      <div class="settings-avatar-overlay">
+        <i class="fa-solid fa-camera"></i> Change
+      </div>
+    </div>
+    <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+
+    <form id="settingsForm">
+      <div class="settings-input-group">
+        <label class="auth-input-label">Username</label>
+        <input type="text" class="settings-input" id="settingsName" placeholder="Username">
+      </div>
+      <div class="settings-input-group">
+        <label class="auth-input-label">Email (read-only)</label>
+        <input type="email" class="settings-input" id="settingsEmail" readonly>
+      </div>
+      <div class="settings-save-wrapper" id="settingsSaveWrapper">
+        <button type="submit" class="settings-save-btn">Save Changes</button>
+        <button type="button" data-action="discard-settings" class="settings-discard-btn">Discard Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fa-solid fa-check"></i><span id="toastText">Added</span></div>
+
+<script>
+const PAINTINGS = [
+  { id: 1, title: "Solstice in Sepia", medium: "Oil on linen", size: '24" × 36"', year: 2024, price: 28000, seed: "art1", tags: ["calm","warm","minimal"], aspect: "portrait", desc: "Price: ₹28,000. A hushed study of winter light filtering through a dusty window. The sepia tones evoke a quiet nostalgia, capturing that specific stillness just before the world wakes up." },
+  { id: 2, title: "Marigold Memory", medium: "Acrylic & gold leaf", size: '20" × 20"', year: 2024, price: 22000, seed: "art2", tags: ["warm","bold"], aspect: "square", desc: "Price: ₹22,000. Vivid marigold petals layered with delicate gold leaf. This piece radiates the warmth of festive afternoons and the enduring glow of cherished memories." },
+  { id: 3, title: "The Hour Between", medium: "Oil on canvas", size: '30" × 40"', year: 2023, price: 42000, seed: "art3", tags: ["calm"], aspect: "landscape", desc: "Price: ₹42,000. That liminal space between dusk and night. Deep indigos melt into soft violets, capturing the breath between sentences and the silence between heartbeats." },
+  { id: 4, title: "Cartography of Quiet", medium: "Mixed media", size: '18" × 24"', year: 2024, price: 32000, seed: "art4", tags: ["minimal","calm"], aspect: "portrait", desc: "Price: ₹32,000. A map to nowhere, charting the topography of stillness. Sparse, intentional lines navigate through neutral tones, rewarding the viewer who leans in close." },
+  { id: 5, title: "Vermillion Vespers", medium: "Oil & cold wax", size: '36" × 48"', year: 2023, price: 58000, seed: "art5", tags: ["bold","warm"], aspect: "landscape", desc: "Price: ₹58,000. The sky burning vermillion as the sun dips below the horizon. Painted with cold wax for texture, this canvas practically hums with the energy of golden hour." },
+  { id: 6, title: "Honey on Linen", medium: "Oil on linen", size: '16" × 20"', year: 2024, price: 30000, seed: "art6", tags: ["warm","minimal","calm"], aspect: "portrait", desc: "Price: ₹30,000. Pure, unadulterated warmth. A study in how light pools and spills like liquid honey across a blank surface. Simple, tactile, and deeply comforting." },
+  { id: 7, title: "Letters Never Sent", medium: "Oil & ink", size: '24" × 30"', year: 2023, price: 45000, seed: "art7", tags: ["bold"], aspect: "portrait", desc: "Price: ₹45,000. Heavy strokes of ink layered over oil, mimicking the weight of words left unspoken. A commanding piece that holds both regret and profound beauty." },
+  { id: 8, title: "Aurum", medium: "Gold leaf & umber", size: '48" × 60"', year: 2024, price: 95000, seed: "art8", tags: ["bold","warm"], aspect: "landscape", desc: "Price: ₹95,000. Our statement canvas. Five feet wide, layered in genuine gold leaf and raw umber. It shifts constantly with the light in your room, feeling alive, ancient, and entirely modern." },
+  { id: 9, title: "Threshold", medium: "Oil on canvas", size: '28" × 36"', year: 2024, price: 38000, seed: "art9", tags: ["minimal"], aspect: "portrait", desc: "Price: ₹38,000. Standing at the edge of something new. A minimalist exploration of negative space and the courage it takes to cross from one chapter of life into the next." }
+];
+
+let cart = JSON.parse(localStorage.getItem('mp_cart') || '[]');
+let wishlist = JSON.parse(localStorage.getItem('mp_wishlist') || '[]');
+let currentUser = JSON.parse(localStorage.getItem('sketra_user') || 'null');
+let authMode = 'login';
+let currentFilter = 'all';
+let currentPreviewId = null;
+
+const formatPrice = (val) => '₹' + val.toLocaleString('en-IN');
+
+// ===== AUTH LOGIC =====
+function getUsers() {
+  return JSON.parse(localStorage.getItem('sketra_users') || '[]');
+}
+
+function saveUsers(users) {
+  localStorage.setItem('sketra_users', JSON.stringify(users));
+}
+
+function renderAvatarHTML(user, sizeClass = '') {
+  const pic = user.tempProfilePic || user.profilePic;
+  if (pic) {
+    return `<img src="${pic}" alt="${user.name || 'User'}">`;
+  } else {
+    const initial = user && user.name ? user.name.charAt(0).toUpperCase() : 'U';
+    return initial;
+  }
+}
+
+function updateAuthUI() {
+  const wrap = document.getElementById('headerActions');
+  let authHTML = '';
+
+  if (currentUser) {
+    authHTML = `
+      <div class="user-avatar" data-action="toggle-user-menu">${renderAvatarHTML(currentUser)}</div>
+      <div class="user-menu" id="userMenu">
+        <div class="user-menu-header">
+          <div class="user-menu-avatar">${renderAvatarHTML(currentUser)}</div>
+          <div class="user-menu-info">
+            <p>${currentUser.name || 'User'}</p>
+            <span>${currentUser.email}</span>
+          </div>
+        </div>
+        <button class="user-menu-btn" data-action="open-settings">
+          <i class="fa-solid fa-gear"></i> Account Settings
+        </button>
+        <button class="user-menu-btn logout" data-action="logout">
+          <i class="fa-solid fa-right-from-bracket"></i> Log out
+        </button>
+      </div>
+    `;
+  } else {
+    authHTML = `
+      <button class="icon-btn" data-action="open-auth" aria-label="Sign In">
+        <i class="fa-regular fa-user"></i>
+      </button>
+    `;
+  }
+
+  wrap.innerHTML = `
+    ${authHTML}
+    <button class="icon-btn" data-action="open-drawer" data-target="wishlist">
+      <i class="fa-regular fa-heart"></i>
+      <span class="badge-count" id="wishlistCount">0</span>
+    </button>
+    <button class="icon-btn" data-action="open-drawer" data-target="cart">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <span class="badge-count" id="cartCount">0</span>
+    </button>
+  `;
+  updateBadges();
+}
+
+function openAuth() {
+  document.getElementById('authOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAuth() {
+  document.getElementById('authOverlay').classList.remove('open');
+  document.getElementById('authError').textContent = '';
+  if (!document.getElementById('previewOverlay').classList.contains('open') && !document.getElementById('settingsOverlay').classList.contains('open')) {
+    document.body.style.overflow = '';
+  }
+}
+
+function toggleAuthMode() {
+  authMode = authMode === 'login' ? 'signup' : 'login';
+  
+  const title = document.getElementById('authTitle');
+  const subtitle = document.getElementById('authSubtitle');
+  const submitBtn = document.getElementById('authSubmitBtn');
+  const switchText = document.getElementById('authSwitchText');
+  const switchBtn = document.getElementById('authSwitchBtn');
+  const nameGroup = document.getElementById('nameInputGroup');
+  const visualTitle = document.getElementById('authVisualTitle');
+  const visualText = document.getElementById('authVisualText');
+
+  if (authMode === 'signup') {
+    title.textContent = 'Create account';
+    subtitle.textContent = 'Join the studio to begin collecting.';
+    submitBtn.textContent = 'Sign Up';
+    switchText.textContent = 'Already have an account?';
+    switchBtn.textContent = 'Sign in';
+    nameGroup.style.display = 'block';
+    visualTitle.textContent = 'Begin your collection.';
+    visualText.textContent = 'Create an account to save your favorite pieces, track your orders, and bring a quiet hour into your home.';
+  } else {
+    title.textContent = 'Welcome back';
+    subtitle.textContent = 'Sign in to continue your collection.';
+    submitBtn.textContent = 'Sign In';
+    switchText.textContent = "Don't have an account?";
+    switchBtn.textContent = 'Sign up';
+    nameGroup.style.display = 'none';
+    visualTitle.textContent = 'Welcome back to the studio.';
+    visualText.textContent = 'Sign in to see your cart, wishlist, and track your quiet hours.';
+  }
+}
+
+function handleAuthSubmit(e) {
+  e.preventDefault();
+  const email = document.getElementById('authEmail').value;
+  const password = document.getElementById('authPassword').value;
+  const name = document.getElementById('authName').value;
+  const errorEl = document.getElementById('authError');
+  
+  if (!email || !password) return;
+
+  let users = getUsers();
+  
+  if (authMode === 'signup') {
+    if (users.find(u => u.email === email)) {
+      errorEl.textContent = 'An account with this email already exists.';
+      return;
+    }
+    currentUser = { name: name || 'Art Collector', email: email, password: password };
+    users.push(currentUser);
+    saveUsers(users);
+  } else {
+    const user = users.find(u => u.email === email && u.password === password);
+    if (!user) {
+      errorEl.textContent = 'Invalid email or password. Please try again.';
+      return;
+    }
+    currentUser = user;
+  }
+  
+  localStorage.setItem('sketra_user', JSON.stringify(currentUser));
+  closeAuth();
+  showToast(`Welcome, ${currentUser.name}!`);
+  updateAuthUI();
+}
+
+function handleOAuth(provider) {
+  const email = window.prompt(`Sign in with ${provider === 'google' ? 'Google' : 'Apple'}\n\nEnter the email associated with your ${provider === 'google' ? 'Google' : 'Apple'} account:`);
+  if (!email) return;
+
+  let users = getUsers();
+  let user = users.find(u => u.email === email);
+  
+  if (!user) {
+    user = { 
+      name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1), 
+      email: email, 
+      provider: provider 
+    };
+    users.push(user);
+    saveUsers(users);
+  }
+  
+  currentUser = user;
+  localStorage.setItem('sketra_user', JSON.stringify(currentUser));
+  closeAuth();
+  showToast(`Signed in as ${currentUser.email}`);
+  updateAuthUI();
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('sketra_user');
+  showToast('Logged out successfully');
+  updateAuthUI();
+}
+
+// ===== SETTINGS LOGIC =====
+function openSettings() {
+  document.getElementById('settingsName').value = currentUser.name || '';
+  document.getElementById('settingsEmail').value = currentUser.email || '';
+  if (currentUser.tempProfilePic) {
+    delete currentUser.tempProfilePic;
+  }
+  renderSettingsProfilePic();
+  checkSettingsDirty();
+  document.getElementById('settingsOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSettings() {
+  if (currentUser.tempProfilePic) {
+    delete currentUser.tempProfilePic;
+    updateAuthUI();
+  }
+  document.getElementById('settingsOverlay').classList.remove('open');
+  if (!document.getElementById('authOverlay').classList.contains('open') && !document.getElementById('previewOverlay').classList.contains('open')) {
+    document.body.style.overflow = '';
+  }
+}
+
+function discardSettings() {
+  if (currentUser.tempProfilePic) {
+    delete currentUser.tempProfilePic;
+  }
+  document.getElementById('settingsName').value = currentUser.name || '';
+  renderSettingsProfilePic();
+  updateAuthUI();
+  checkSettingsDirty();
+  showToast('Changes discarded');
+}
+
+function renderSettingsProfilePic() {
+  const picEl = document.getElementById('settingsProfilePic');
+  if (currentUser.tempProfilePic || currentUser.profilePic) {
+    picEl.innerHTML = `<img src="${currentUser.tempProfilePic || currentUser.profilePic}" alt="Profile">`;
+  } else {
+    picEl.innerHTML = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U';
+  }
+}
+
+function checkSettingsDirty() {
+  const nameInput = document.getElementById('settingsName');
+  const saveWrapper = document.getElementById('settingsSaveWrapper');
+  
+  const nameChanged = nameInput.value !== (currentUser.name || '');
+  const picChanged = !!currentUser.tempProfilePic;
+  
+  if (nameChanged || picChanged) {
+    saveWrapper.classList.add('is-visible');
+  } else {
+    saveWrapper.classList.remove('is-visible');
+  }
+}
+
+document.getElementById('settingsName').addEventListener('input', checkSettingsDirty);
+
+document.getElementById('profilePicInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      currentUser.tempProfilePic = event.target.result;
+      renderSettingsProfilePic();
+      updateAuthUI();
+      checkSettingsDirty();
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+function handleSettingsSubmit(e) {
+  e.preventDefault();
+  const newName = document.getElementById('settingsName').value || 'User';
+  currentUser.name = newName;
+  
+  if (currentUser.tempProfilePic) {
+    currentUser.profilePic = currentUser.tempProfilePic;
+    delete currentUser.tempProfilePic;
+  }
+  
+  localStorage.setItem('sketra_user', JSON.stringify(currentUser));
+  
+  let users = getUsers();
+  const idx = users.findIndex(u => u.email === currentUser.email);
+  if (idx !== -1) {
+    users[idx] = currentUser;
+    saveUsers(users);
+  }
+  
+  checkSettingsDirty();
+  showToast('Profile updated successfully');
+  updateAuthUI();
+}
+
+
+// ===== GALLERY & CART LOGIC =====
+function renderGallery() {
+  const grid = document.getElementById('galleryGrid');
+  const filtered = currentFilter === 'all' ? PAINTINGS : PAINTINGS.filter(p => p.tags.includes(currentFilter));
+  grid.innerHTML = filtered.map(p => {
+    const inWishlist = wishlist.includes(p.id);
+    const inCart = cart.includes(p.id);
+    return `
+      <article class="painting-card" aria-label="${p.title}, Price: ${formatPrice(p.price)}">
+        <div class="painting-frame ${p.aspect === 'landscape' ? 'landscape' : p.aspect === 'square' ? 'square' : ''}" data-action="open-preview" data-id="${p.id}">
+          <img src="https://picsum.photos/seed/${p.seed}/600/700.jpg" alt="${p.title} painting, Price: ${formatPrice(p.price)}" class="painting-image">
+          <div class="card-overlay"></div>
+          <div class="card-num">N° ${String(p.id).padStart(3, '0')} · ${p.year}</div>
+          <button class="heart-btn ${inWishlist ? 'active' : ''}" data-action="toggle-wishlist" data-id="${p.id}">
+            <i class="${inWishlist ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+          </button>
+          <div class="quick-actions">
+            <button class="btn-bagel ${inCart ? 'active' : ''}" data-action="add-to-cart" data-id="${p.id}">
+              ${inCart ? '<i class="fa-solid fa-check"></i> In Cart' : '<i class="fa-solid fa-plus"></i> Add to Cart'}
+            </button>
+          </div>
+        </div>
+        <div class="card-info" data-action="open-preview" data-id="${p.id}">
+          <div>
+            <h3 class="card-title">${p.title}</h3>
+            <p class="card-meta">${p.medium} · ${p.size}</p>
+          </div>
+          <p class="card-price">${formatPrice(p.price)}</p>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+function renderCart() {
+  const wrap = document.getElementById('cartItems');
+  if (cart.length === 0) {
+    wrap.innerHTML = `<div class="empty-state">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <p>Your cart is empty.</p>
+      <span>Wander the gallery — something may find you.</span>
+    </div>`;
+    document.getElementById('cartTotal').textContent = '₹0';
+    return;
+  }
+  wrap.innerHTML = cart.map(id => {
+    const p = PAINTINGS.find(x => x.id === id);
+    return `
+    <div class="cart-item">
+      <div class="cart-item-clickable" data-action="open-preview" data-id="${p.id}">
+        <img src="https://picsum.photos/seed/${p.seed}/200/200.jpg" alt="${p.title} - Price: ${formatPrice(p.price)}">
+        <div class="cart-item-info">
+          <h4 class="item-title">${p.title}</h4>
+          <p class="item-meta">N° ${String(p.id).padStart(3, '0')} · ${p.year}</p>
+          <p class="item-meta">${p.medium} · ${p.size}</p>
+          <p class="item-price">${formatPrice(p.price)}</p>
+        </div>
+      </div>
+      <div class="cart-item-actions">
+        <button class="remove-btn" data-action="remove-from-cart" data-id="${p.id}" aria-label="Remove"><i class="fa-solid fa-xmark"></i></button>
+        <button data-action="move-to-wishlist" data-id="${p.id}" class="item-action-btn">
+          <i class="fa-regular fa-heart"></i> Wishlist
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+  const total = cart.reduce((s, id) => s + PAINTINGS.find(x => x.id === id).price, 0);
+  document.getElementById('cartTotal').textContent = formatPrice(total);
+}
+
+function renderWishlist() {
+  const wrap = document.getElementById('wishlistItems');
+  if (wishlist.length === 0) {
+    wrap.innerHTML = `<div class="empty-state">
+      <i class="fa-regular fa-heart"></i>
+      <p>No saved pieces yet.</p>
+      <span>Tap the heart on any painting to keep it close.</span>
+    </div>`;
+    return;
+  }
+  wrap.innerHTML = wishlist.map(id => {
+    const p = PAINTINGS.find(x => x.id === id);
+    return `
+    <div class="cart-item">
+      <div class="cart-item-clickable" data-action="open-preview" data-id="${p.id}">
+        <img src="https://picsum.photos/seed/${p.seed}/200/200.jpg" alt="${p.title} - Price: ${formatPrice(p.price)}">
+        <div class="cart-item-info">
+          <h4 class="item-title">${p.title}</h4>
+          <p class="item-meta">N° ${String(p.id).padStart(3, '0')} · ${p.year}</p>
+          <p class="item-meta">${p.medium} · ${p.size}</p>
+          <p class="item-price">${formatPrice(p.price)}</p>
+        </div>
+      </div>
+      <div class="cart-item-actions">
+        <button class="remove-btn" data-action="remove-from-wishlist" data-id="${p.id}" aria-label="Remove"><i class="fa-solid fa-xmark"></i></button>
+        <button data-action="move-to-cart" data-id="${p.id}" class="item-action-btn">
+          <i class="fa-solid fa-bag-shopping"></i> Cart
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateBadges() {
+  const c = document.getElementById('cartCount'), w = document.getElementById('wishlistCount');
+  if(!c || !w) return;
+  c.textContent = cart.length; w.textContent = wishlist.length;
+  c.classList.toggle('show', cart.length > 0);
+  w.classList.toggle('show', wishlist.length > 0);
+}
+
+function addToCart(id) {
+  if (!cart.includes(id)) { cart.push(id); saveState(); showToast('Added to cart'); }
+  updateBadges(); renderGallery(); renderCart();
+  if (currentPreviewId === id) openPreview(id); 
+}
+function removeFromCart(id) { 
+  cart = cart.filter(x => x !== id); 
+  saveState(); updateBadges(); renderGallery(); renderCart(); 
+  if (currentPreviewId === id) openPreview(id); 
+}
+function toggleWishlist(id) {
+  if (wishlist.includes(id)) { wishlist = wishlist.filter(x => x !== id); }
+  else { wishlist.push(id); showToast('Saved to wishlist', 'heart'); }
+  saveState(); updateBadges(); renderGallery(); renderWishlist();
+  if (currentPreviewId === id) openPreview(id); 
+}
+function removeFromWishlist(id) { 
+  wishlist = wishlist.filter(x => x !== id); 
+  saveState(); updateBadges(); renderGallery(); renderWishlist(); 
+  if (currentPreviewId === id) openPreview(id); 
+}
+function moveToCart(id) { 
+  if (!cart.includes(id)) { cart.push(id); }
+  wishlist = wishlist.filter(x => x !== id); 
+  saveState(); updateBadges(); renderGallery(); renderCart(); renderWishlist(); 
+  showToast('Moved to cart'); 
+  if (currentPreviewId === id) openPreview(id); 
+}
+function moveToWishlist(id) {
+  if (!wishlist.includes(id)) { wishlist.push(id); }
+  cart = cart.filter(x => x !== id);
+  saveState(); updateBadges(); renderGallery(); renderCart(); renderWishlist();
+  showToast('Moved to wishlist', 'heart');
+  if (currentPreviewId === id) openPreview(id); 
+}
+function moveAllToCart() { 
+  wishlist.forEach(id => { if(!cart.includes(id)) cart.push(id); }); 
+  showToast('Moved all to cart'); 
+  wishlist = []; 
+  saveState(); updateBadges(); renderGallery(); renderCart(); renderWishlist(); 
+}
+function openDrawer(type) {
+  closeDrawers();
+  closePreview();
+  if (type === 'cart') { renderCart(); document.getElementById('cartDrawer').classList.add('open'); }
+  else { renderWishlist(); document.getElementById('wishlistDrawer').classList.add('open'); }
+  document.getElementById('overlay').classList.add('open');
+}
+function closeDrawers() {
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('wishlistDrawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+function saveState() {
+  localStorage.setItem('mp_cart', JSON.stringify(cart));
+  localStorage.setItem('mp_wishlist', JSON.stringify(wishlist));
+}
+
+function openPreview(id) {
+  const p = PAINTINGS.find(x => x.id === id);
+  if (!p) return;
+  
+  currentPreviewId = id;
+  const inWishlist = wishlist.includes(p.id);
+  const inCart = cart.includes(p.id);
+
+  document.getElementById('previewImg').src = `https://picsum.photos/seed/${p.seed}/800/1000.jpg`;
+  document.getElementById('previewImg').alt = `${p.title} painting, Price: ${formatPrice(p.price)}`;
+  
+  document.getElementById('previewScrollArea').innerHTML = `
+    <div class="preview-num">N° ${String(p.id).padStart(3, '0')} · ${p.year}</div>
+    <h2 class="preview-title">${p.title}</h2>
+    <div class="preview-meta">${p.medium} · ${p.size}</div>
+    <p class="preview-desc">${p.desc}</p>
+    <p class="preview-price">${formatPrice(p.price)}</p>
+  `;
+  
+  document.getElementById('previewFooter').innerHTML = `
+    <button class="preview-btn preview-btn-primary ${inCart ? 'active' : ''}" data-action="${inCart ? 'remove-from-cart' : 'add-to-cart'}" data-id="${p.id}">
+      <i class="fa-solid ${inCart ? 'fa-check' : 'fa-bag-shopping'}"></i> ${inCart ? 'In Cart (Remove?)' : 'Add to Cart'}
+    </button>
+    <button class="preview-btn preview-btn-outline ${inWishlist ? 'active' : ''}" data-action="toggle-wishlist" data-id="${p.id}">
+      <i class="fa-solid ${inWishlist ? 'fa-heart' : 'fa-heart-circle-plus'}"></i> ${inWishlist ? 'Saved to Wishlist' : 'Save to Wishlist'}
+    </button>
+  `;
+  
+  document.getElementById('previewOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePreview() {
+  currentPreviewId = null;
+  document.getElementById('previewOverlay').classList.remove('open');
+  if (!document.getElementById('cartDrawer').classList.contains('open') && !document.getElementById('wishlistDrawer').classList.contains('open')) {
+    document.body.style.overflow = '';
+  }
+}
+
+function showToast(text, icon = 'check') {
+  const t = document.getElementById('toast');
+  t.querySelector('i').className = icon === 'heart' ? 'fa-solid fa-heart' : 'fa-solid fa-check';
+  document.getElementById('toastText').textContent = text;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+document.addEventListener('click', function(e) {
+  const trigger = e.target.closest('[data-action]');
+  if (!trigger) return;
+  
+  const action = trigger.dataset.action;
+  const id = parseInt(trigger.dataset.id);
+  
+  if (action === 'open-drawer') openDrawer(trigger.dataset.target);
+  else if (action === 'close-drawers') closeDrawers();
+  else if (action === 'add-to-cart') addToCart(id);
+  else if (action === 'remove-from-cart') removeFromCart(id);
+  else if (action === 'toggle-wishlist') toggleWishlist(id);
+  else if (action === 'remove-from-wishlist') removeFromWishlist(id);
+  else if (action === 'move-to-cart') moveToCart(id);
+  else if (action === 'move-to-wishlist') moveToWishlist(id);
+  else if (action === 'move-all-to-cart') moveAllToCart();
+  else if (action === 'open-preview') openPreview(id);
+  else if (action === 'close-preview') closePreview();
+  
+  else if (action === 'open-auth') openAuth();
+  else if (action === 'close-auth') closeAuth();
+  else if (action === 'toggle-auth-mode') toggleAuthMode();
+  else if (action === 'oauth-google') handleOAuth('google');
+  else if (action === 'oauth-apple') handleOAuth('apple');
+  else if (action === 'toggle-user-menu') document.getElementById('userMenu').classList.toggle('open');
+  else if (action === 'logout') logout();
+  else if (action === 'open-settings') openSettings();
+  else if (action === 'close-settings') closeSettings();
+  else if (action === 'discard-settings') discardSettings();
+  
+  else if (action === 'checkout') {
+    if (cart.length === 0) showToast('Cart is empty');
+    else showToast('Checkout is a demo here');
+  }
+});
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('[data-action="toggle-user-menu"]') && !e.target.closest('#userMenu')) {
+    const menu = document.getElementById('userMenu');
+    if (menu) menu.classList.remove('open');
+  }
+});
+
+document.getElementById('filterChips').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  document.querySelectorAll('#filterChips .chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  currentFilter = chip.dataset.filter;
+  renderGallery();
+});
+
+document.addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (e.target.id === 'authForm') handleAuthSubmit(e);
+  else if (e.target.id === 'settingsForm') handleSettingsSubmit(e);
+  else if (e.target.id === 'newsletterForm') { showToast('Welcome to the studio letters'); e.target.reset(); }
+});
+
+document.addEventListener('keydown', (e) => { 
+  if (e.key === 'Escape') { 
+    closeDrawers(); 
+    closePreview(); 
+    closeAuth();
+    closeSettings();
+  } 
+});
+
+updateAuthUI();
+renderGallery(); 
+renderCart(); 
+renderWishlist();
+</script>
+
+<script
+  src="https://chat.flocci.in/widget.js?v=20260715-1"
+  data-key="fch_live_9c913909961300f82b7508f3d9bba253ff8e33695c7342c4"
+  data-api="https://chat.flocci.in"
+  async
+  defer
+></script>
+
+</body>
+</html>
