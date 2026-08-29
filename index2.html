@@ -118,9 +118,23 @@
 
   /* Hero */
   .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 120px 0 60px; overflow: hidden; }
-  .paint-blob { position: absolute; border-radius: 50% 60% 40% 70% / 60% 40% 70% 50%; filter: blur(60px); opacity: 0.5; pointer-events: none; }
+  
+  /* Enhanced Parallax Blobs */
+  .paint-blob { 
+    position: absolute; border-radius: 50% 60% 40% 70% / 60% 40% 70% 50%; 
+    filter: blur(60px); opacity: 0.5; pointer-events: none; 
+    will-change: transform;
+  }
+  
   .hero-content { position: relative; z-index: 10; display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
   @media (min-width: 1024px) { .hero-content { grid-template-columns: 7fr 5fr; } }
+  
+  /* Hero Text Wrapper */
+  #heroText { 
+    will-change: transform, opacity; 
+    transition: transform 0.1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
   .hero-title { font-family: 'Fraunces', serif; font-size: 14vw; line-height: 0.92; letter-spacing: -0.03em; font-weight: 300; }
   @media (min-width: 768px) { .hero-title { font-size: 10vw; } }
   @media (min-width: 1024px) { .hero-title { font-size: 8.2vw; } }
@@ -135,11 +149,41 @@
   .btn-outline:hover { background: var(--bagel-deep); color: var(--paper); }
   .btn-outline.active { background: var(--accent-coral); color: white; border-color: var(--accent-coral); }
   
-  /* Portrait Frame */
-  .portrait-frame { position: relative; padding: 16px; background: var(--paper); box-shadow: 0 30px 60px -20px rgba(45,31,18,0.4); z-index: 2; transform: rotate(2deg); display: none; }
-  @media (min-width: 1024px) { .portrait-frame { display: block; } }
-  .portrait-frame img { width: 100%; height: auto; aspect-ratio: 3/4; object-fit: cover; display: block; box-shadow: inset 0 0 80px rgba(45,31,18,0.15); }
-  .tape { position: absolute; width: 90px; height: 22px; background: rgba(242, 213, 140, 0.7); top: -8px; left: 50%; transform: translateX(-50%) rotate(-2deg); }
+  /* Portrait Wrapper */
+  .portrait-wrapper { 
+    position: relative; 
+    display: none;
+    will-change: transform;
+  }
+  @media (min-width: 1024px) { .portrait-wrapper { display: block; } }
+  
+  /* Portrait Frame (Clipped Parallax) */
+  .portrait-frame { 
+    position: relative; overflow: hidden; 
+    box-shadow: 0 30px 60px -20px rgba(45,31,18,0.4); 
+    transform: rotate(2deg); 
+    aspect-ratio: 4/5; 
+    background: var(--paper);
+    border: 12px solid var(--paper); 
+  }
+  .portrait-img-3d {
+    width: 100%; height: 100%; 
+    object-fit: cover; display: block; 
+    box-shadow: inset 0 0 80px rgba(45,31,18,0.15);
+    will-change: transform;
+    transition: transform 0.1s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: scale(1.15); 
+  }
+  .price-tag-3d {
+    position: absolute; bottom: -24px; left: -24px; background: var(--paper); padding: 12px 20px; 
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); 
+    transform: rotate(-3deg);
+    z-index: 5; 
+  }
+  .tape { 
+    position: absolute; width: 90px; height: 22px; background: rgba(242, 213, 140, 0.7); 
+    top: -8px; left: 50%; transform: translateX(-50%) rotate(-2deg); z-index: 5; 
+  }
 
   /* Marquee */
   .marquee-section { padding: 20px 0; background: var(--bagel-deep); color: var(--paper); overflow: hidden; display: flex; border-top: 1px solid var(--bagel-deep); border-bottom: 1px solid var(--bagel-deep); }
@@ -160,6 +204,15 @@
   .artist-stats { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 420px; }
   .stat-num { font-family: 'Fraunces', serif; font-size: 40px; font-weight: 300; }
   .stat-label { font-size: 11px; letter-spacing: 0.15em; color: var(--bagel-toast); margin-top: 4px; text-transform: uppercase; }
+
+  /* Process Section */
+  .process-section { padding: 120px 0; background: var(--bg-cream); position: relative; }
+  .process-grid { display: grid; grid-template-columns: 1fr; gap: 32px; max-width: 1000px; margin: 0 auto; }
+  @media (min-width: 768px) { .process-grid { grid-template-columns: repeat(3, 1fr); } }
+  .process-card { text-align: center; padding: 40px 24px; background: var(--paper); border-radius: 16px; box-shadow: 0 10px 30px -15px rgba(45,31,18,0.1); border: 1px solid var(--line); }
+  .process-num { font-family: 'Fraunces', serif; font-size: 56px; font-weight: 300; color: var(--accent-coral); margin-bottom: 16px; line-height: 1; }
+  .process-title { font-family: 'Fraunces', serif; font-size: 24px; margin-bottom: 12px; font-weight: 400; }
+  .process-text { font-size: 15px; color: var(--bagel-crust); line-height: 1.6; }
 
   /* Gallery */
   .gallery-section { padding: 100px 0; background: var(--bg-warm); }
@@ -199,25 +252,19 @@
   .card-meta { font-size: 12px; color: var(--bagel-toast); margin-top: 4px; pointer-events: none; }
   .card-price { font-family: 'Fraunces', serif; font-size: 24px; color: var(--accent-coral); font-weight: 300; pointer-events: none; }
 
-  /* Process Section */
-  .process-section { padding: 100px 0; }
-  .process-grid { display: grid; grid-template-columns: 1fr; gap: 32px; max-width: 1000px; margin: 0 auto; }
-  @media (min-width: 768px) { .process-grid { grid-template-columns: repeat(3, 1fr); } }
-  .process-card { text-align: center; padding: 32px; background: var(--paper); border-radius: 16px; }
-  .process-num { font-family: 'Fraunces', serif; font-size: 60px; font-weight: 300; color: var(--accent-coral); margin-bottom: 16px; }
-  .process-title { font-family: 'Fraunces', serif; font-size: 24px; margin-bottom: 12px; }
-  .process-text { font-size: 14px; color: var(--bagel-crust); }
+  /* Quote Banner */
+  .quote-banner { background: var(--bagel-deep); padding: 100px 0; color: var(--paper); text-align: center; }
 
   /* Footer */
-  footer { background: var(--bagel-deep); color: var(--paper); padding: 80px 0 40px; }
+  footer { background: var(--bg-cream); color: var(--bagel-deep); padding: 80px 0 40px; border-top: 1px solid var(--line); }
   .footer-grid { display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 64px; }
   @media (min-width: 768px) { .footer-grid { grid-template-columns: 2fr 1fr; } }
   .footer-title { font-family: 'Fraunces', serif; font-size: 48px; font-weight: 300; line-height: 1; }
-  .footer-title em { color: var(--butter); }
-  .news-form { display: flex; gap: 12px; border-bottom: 1px solid rgba(251,246,236,0.3); padding-bottom: 12px; width: 100%; }
-  .news-input { flex: 1; background: transparent; border: none; outline: none; color: var(--paper); font-family: 'Outfit', sans-serif; font-size: 16px; }
-  .news-btn { background: none; border: none; color: var(--butter); cursor: pointer; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; }
-  .footer-bottom { border-top: 1px solid rgba(251,246,236,0.15); padding-top: 32px; display: flex; justify-content: space-between; font-size: 12px; opacity: 0.6; flex-wrap: wrap; gap: 16px; }
+  .footer-title em { color: var(--accent-coral); }
+  .news-form { display: flex; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px; width: 100%; }
+  .news-input { flex: 1; background: transparent; border: none; outline: none; color: var(--bagel-deep); font-family: 'Outfit', sans-serif; font-size: 16px; }
+  .news-btn { background: none; border: none; color: var(--accent-coral); cursor: pointer; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .footer-bottom { border-top: 1px solid var(--line); padding-top: 32px; display: flex; justify-content: space-between; font-size: 12px; opacity: 0.6; flex-wrap: wrap; gap: 16px; }
 
   /* Drawers & Toast (Fixed) */
   .overlay { position: fixed; inset: 0; z-index: 999; background: rgba(45,31,18,0.5); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.4s; }
@@ -379,6 +426,7 @@
     <nav>
       <a href="#gallery" class="nav-link">Gallery</a>
       <a href="#artist" class="nav-link">The Artist</a>
+      <a href="#journey" class="nav-link">The Journey</a>
     </nav>
     <div class="header-actions" id="headerActions">
       <button class="icon-btn" data-action="open-drawer" data-target="wishlist">
@@ -394,11 +442,11 @@
 </header>
 
 <section id="top" class="hero">
-  <div class="paint-blob" style="background: var(--bagel-gold); width: 560px; height: 560px; top: 8%; left: -12%;"></div>
-  <div class="paint-blob" style="background: var(--accent-coral); width: 440px; height: 440px; bottom: 6%; right: -8%;"></div>
+  <div class="paint-blob blob-1" style="background: var(--bagel-gold); width: 560px; height: 560px; top: 8%; left: -12%;"></div>
+  <div class="paint-blob blob-2" style="background: var(--accent-coral); width: 440px; height: 440px; bottom: 6%; right: -8%;"></div>
   <div class="container">
     <div class="hero-content">
-      <div>
+      <div id="heroText">
         <h1 class="hero-title">Canvas<br>that hold<br><em>quiet hours.</em></h1>
         <p class="hero-subtitle">A small, slow collection of original paintings by <span class="font-display" style="font-style: italic;">Pranusha</span> — pigments ground by hand, moments caught between breath and brush.</p>
         <div class="btn-group">
@@ -408,10 +456,12 @@
           </a>
         </div>
       </div>
-      <div class="portrait-frame" data-action="open-preview" data-id="8" style="cursor: pointer;">
-        <img src="https://picsum.photos/seed/art8/600/780.jpg" alt="Aurum painting - Price: ₹95,000">
+      <div class="portrait-wrapper" id="heroPortrait" data-action="open-preview" data-id="8" style="cursor: pointer;">
         <div class="tape"></div>
-        <div style="position: absolute; bottom: -24px; left: -24px; background: var(--paper); padding: 12px 20px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); transform: rotate(-3deg);">
+        <div class="portrait-frame">
+          <img src="https://picsum.photos/seed/art8/600/780.jpg" alt="Aurum painting - Price: ₹95,000" class="portrait-img-3d">
+        </div>
+        <div class="price-tag-3d">
           <p style="font-family: 'Fraunces', serif; font-style: italic; font-size: 11px; color: var(--bagel-toast); letter-spacing: 0.1em;">N° 008 · 2024</p>
           <p class="font-display" style="font-size: 18px;">Aurum</p>
           <p style="font-family: 'Fraunces', serif; font-size: 14px; color: var(--accent-coral);">₹95,000</p>
@@ -424,13 +474,11 @@
 <div class="marquee-section">
   <div class="marquee">
     <div class="marquee-content">
-      <span>Hand-ground pigments</span><span>·</span>
       <span>Signed originals</span><span>·</span>
-      <span>Worldwide shipping</span><span>·</span>
+      <span>Shipping in Chandigarh</span><span>·</span>
       <span>Made in Chandigarh, India</span><span>·</span>
-      <span>Hand-ground pigments</span><span>·</span>
       <span>Signed originals</span><span>·</span>
-      <span>Worldwide shipping</span><span>·</span>
+      <span>Shipping in Chandigarh</span><span>·</span>
       <span>Made in Chandigarh, India</span><span>·</span>
     </div>
   </div>
@@ -441,7 +489,7 @@
   <div class="container">
     <div class="artist-grid">
       <div class="artist-portrait">
-        <div class="portrait-frame" style="display: block; transform: rotate(-2deg);">
+        <div class="portrait-frame" style="display: block; transform: rotate(-2deg); overflow: visible;">
           <img src="https://picsum.photos/seed/pranusha-portrait/600/750.jpg" alt="Pranusha">
         </div>
       </div>
@@ -452,7 +500,7 @@
         </div>
         <h2 class="section-title">Pranusha<br><em style="color: var(--accent-coral); font-weight: 300;">paints the in-between.</em></h2>
         <p>The hour before dawn. The breath between sentences. The warmth of a window left open in October. Pranusha's paintings begin as a feeling she can't name — and end as something you'll recognize.</p>
-        <p>She works from a small studio in Chandigarh, India, using rich synthetic pigments and bold store-bought acrylics to capture vivid, modern emotions. Each canvas takes 1 month.</p>
+        <p>She works from a small studio in Chandigarh, India, using acrylics and pigments to capture vivid, modern emotions. Each canvas takes 1 month.</p>
         <p class="artist-quote">"I'm not trying to paint what something looks like. I'm trying to paint what it feels like to remember it."</p>
         <div class="artist-stats">
           <div>
@@ -473,6 +521,38 @@
   </div>
 </section>
 
+<!-- Process Section / The Journey -->
+<section id="journey" class="process-section">
+  <div class="container">
+    <div class="text-center" style="margin-bottom: 64px;">
+      <div class="flex items-center justify-center gap-3" style="margin-bottom: 16px;">
+        <div style="height: 1px; width: 32px; background: var(--bagel-crust);"></div>
+        <span style="font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--bagel-toast);">The Journey</span>
+        <div style="height: 1px; width: 32px; background: var(--bagel-crust);"></div>
+      </div>
+      <h2 class="section-title" style="font-size: 48px; margin-bottom: 16px;">From Studio to Sanctuary</h2>
+      <p style="max-width: 600px; margin: 0 auto; color: var(--bagel-crust);">Every painting goes through a careful, slow process before it finds its place on your wall.</p>
+    </div>
+    <div class="process-grid">
+      <div class="process-card">
+        <div class="process-num">01</div>
+        <h3 class="process-title">The Spark</h3>
+        <p class="process-text">Each piece begins with a feeling—a memory of light, a half-forgotten conversation. Pranusha translates these intangible moments directly onto the canvas.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">02</div>
+        <h3 class="process-title">The Craft</h3>
+        <p class="process-text">Once the painting is dry, it is stretched and framed in solid oak by hand. No mass production, just careful, deliberate craftsmanship that honors the art.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">03</div>
+        <h3 class="process-title">The Arrival</h3>
+        <p class="process-text">Packed in archival materials, your painting arrives ready to hang. A handwritten note from Pranusha accompanies every single piece.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="gallery" class="gallery-section">
   <div class="container">
     <div class="gallery-header">
@@ -486,14 +566,6 @@
       <p style="max-width: 320px; font-size: 14px; color: var(--bagel-crust);">Each painting is an original, framed in oak, signed by hand. Hover to peek at quick actions — or open the AI assistant for a guided wander.</p>
     </div>
 
-    <div class="filters" id="filterChips">
-      <button class="chip active" data-filter="all">All Pieces</button>
-      <button class="chip" data-filter="calm">Calm</button>
-      <button class="chip" data-filter="warm">Warm</button>
-      <button class="chip" data-filter="bold">Bold</button>
-      <button class="chip" data-filter="minimal">Minimal</button>
-    </div>
-
     <div class="gallery-grid" id="galleryGrid"></div>
   </div>
 </section>
@@ -501,14 +573,11 @@
 <footer>
   <div class="footer-grid">
     <div>
-      <h3 class="footer-title">Slow letters,<br><em>once a month.</em></h3>
-      <p style="font-size: 14px; opacity: 0.7; margin-top: 16px; max-width: 400px;">Studio notes, new pieces before they're listed, and the occasional recipe. No noise.</p>
+      <h3 class="footer-title">"Art is not what you see,<br><em>but what you make others see."</em></h3>
+      <p style="font-size: 14px; opacity: 0.7; margin-top: 16px; max-width: 400px;">A quote by Edgar Degas, echoing the spirit of Sketra. Each canvas is a window into an unspoken memory.</p>
     </div>
     <div style="display: flex; align-items: flex-end;">
-      <form id="newsletterForm" class="news-form">
-        <input type="email" required placeholder="your.email@studio.com" class="news-input">
-        <button type="submit" class="news-btn">Subscribe →</button>
-      </form>
+      <p style="font-size: 16px; color: var(--accent-coral); margin: 0; letter-spacing: 0.05em;">Chandigarh, UT, India, Asia</p>
     </div>
   </div>
   <div class="footer-bottom">
@@ -675,6 +744,63 @@ let currentFilter = 'all';
 let currentPreviewId = null;
 
 const formatPrice = (val) => '₹' + val.toLocaleString('en-IN');
+
+// ===== ENHANCED MULTI-LAYER PARALLAX LOGIC =====
+const heroPortrait = document.getElementById('heroPortrait');
+const heroText = document.getElementById('heroText');
+const blobs = document.querySelectorAll('#top .paint-blob');
+
+if (heroPortrait && heroText) {
+    const img = heroPortrait.querySelector('.portrait-img-3d');
+    let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+        const hero = document.getElementById('top');
+        const rect = hero.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+        
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        targetX = (e.clientX - cx) / cx;
+        targetY = (e.clientY - cy) / cy;
+    });
+
+    function animateHero() {
+        requestAnimationFrame(animateHero);
+        const hero = document.getElementById('top');
+        const rect = hero.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+
+        currentX += (targetX - currentX) * 0.06;
+        currentY += (targetY - currentY) * 0.06;
+
+        const scrollY = window.scrollY;
+
+        // 1. Painting Image inside frame (moves with mouse and scroll)
+        const moveX = currentX * -15; 
+        const moveY = currentY * -15 - scrollY * 0.3; 
+        img.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.15)`;
+
+        // 2. Hero Text (moves opposite to mouse for depth, moves up and fades on scroll)
+        const textX = currentX * 12;
+        const textY = currentY * 12 - scrollY * 0.5;
+        heroText.style.transform = `translate(${textX}px, ${textY}px)`;
+        heroText.style.opacity = Math.max(0, 1 - scrollY / 500);
+
+        // 3. Portrait Wrapper (moves slightly with scroll to separate from text)
+        heroPortrait.style.transform = `translateY(${-scrollY * 0.1}px)`;
+
+        // 4. Background Blobs (atmospheric depth)
+        blobs.forEach((blob, index) => {
+            const depth = index === 0 ? 0.5 : -0.4; 
+            const blobScroll = index === 0 ? 0.1 : -0.15;
+            const blobX = currentX * 20 * depth;
+            const blobY = currentY * 20 * depth - scrollY * blobScroll;
+            blob.style.transform = `translate(${blobX}px, ${blobY}px)`;
+        });
+    }
+    animateHero();
+}
 
 // ===== AUTH LOGIC =====
 function getUsers() {
@@ -1210,20 +1336,10 @@ document.addEventListener('click', function(e) {
   }
 });
 
-document.getElementById('filterChips').addEventListener('click', (e) => {
-  const chip = e.target.closest('.chip');
-  if (!chip) return;
-  document.querySelectorAll('#filterChips .chip').forEach(c => c.classList.remove('active'));
-  chip.classList.add('active');
-  currentFilter = chip.dataset.filter;
-  renderGallery();
-});
-
 document.addEventListener('submit', function(e) {
   e.preventDefault();
   if (e.target.id === 'authForm') handleAuthSubmit(e);
   else if (e.target.id === 'settingsForm') handleSettingsSubmit(e);
-  else if (e.target.id === 'newsletterForm') { showToast('Welcome to the studio letters'); e.target.reset(); }
 });
 
 document.addEventListener('keydown', (e) => { 
