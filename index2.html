@@ -20,6 +20,8 @@
     --butter: #F2D58C;
     --accent-coral: #D4774A;
     --line: rgba(45, 31, 18, 0.12);
+    --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,8 +33,34 @@
     overflow-x: hidden;
     font-weight: 400;
     line-height: 1.5;
+    cursor: none; /* Premium Custom Cursor */
   }
+  
+  /* Hide default cursor on touch devices, restore normal cursor */
+  @media (hover: none) and (pointer: coarse) {
+    body { cursor: auto; }
+    .custom-cursor { display: none !important; }
+  }
+
   .font-display { font-family: 'Fraunces', serif; }
+
+  /* Premium Custom Cursor */
+  .custom-cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 14px; height: 14px;
+    background: var(--bagel-deep);
+    border: 2px solid var(--accent-coral);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: background 0.3s var(--ease-premium), border-color 0.3s var(--ease-premium);
+  }
+  .custom-cursor.hovering {
+    background: var(--accent-coral);
+    border-color: var(--bagel-deep);
+  }
 
   /* Layout Helpers */
   .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
@@ -88,102 +116,107 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 16px 24px; max-width: 1200px; margin: 0 auto;
   }
-  .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--bagel-deep); cursor: pointer; }
+  .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--bagel-deep); cursor: none; }
   .logo-text { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; }
   nav { display: none; gap: 36px; }
   @media (min-width: 768px) { nav { display: flex; } }
-  .nav-link { text-decoration: none; color: var(--bagel-deep); font-size: 14px; position: relative; cursor: pointer; background: none; border: none; font-family: 'Outfit', sans-serif; }
-  .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1.5px; background: var(--bagel-crust); transition: width 0.3s; }
+  .nav-link { text-decoration: none; color: var(--bagel-deep); font-size: 14px; position: relative; cursor: none; background: none; border: none; font-family: 'Outfit', sans-serif; }
+  .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1.5px; background: var(--accent-coral); transition: width 0.4s var(--ease-premium); }
   .nav-link:hover::after { width: 100%; }
   .header-actions { display: flex; gap: 20px; align-items: center; position: relative; }
-  .icon-btn { position: relative; background: none; border: none; cursor: pointer; color: var(--bagel-deep); font-size: 18px; }
-  .badge-count { position: absolute; top: -6px; right: -6px; background: var(--accent-coral); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; transform: scale(0); transition: transform 0.3s; }
+  .icon-btn { position: relative; background: none; border: none; cursor: none; color: var(--bagel-deep); font-size: 18px; transition: transform 0.3s var(--ease-bounce); }
+  .icon-btn:hover { transform: scale(1.15) translateY(-2px); color: var(--accent-coral); }
+  .badge-count { position: absolute; top: -6px; right: -6px; background: var(--accent-coral); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; transform: scale(0); transition: transform 0.4s var(--ease-bounce); }
   .badge-count.show { transform: scale(1); }
 
   /* User Auth Elements */
-  .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--bagel-gold), var(--accent-coral)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 500; font-size: 14px; cursor: pointer; border: none; transition: transform 0.3s; overflow: hidden; }
-  .user-avatar:hover { transform: scale(1.05); }
-  .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--bagel-gold), var(--accent-coral)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 500; font-size: 14px; cursor: none; border: none; transition: transform 0.3s var(--ease-bounce); overflow: hidden; }
+  .user-avatar:hover { transform: scale(1.1); }
+  .user-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
   
-  .user-menu { position: absolute; top: 120%; right: 0; width: 240px; background: var(--paper); border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15); border: 1px solid var(--line); padding: 16px; z-index: 60; opacity: 0; transform: translateY(10px); pointer-events: none; transition: all 0.3s; }
-  .user-menu.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .user-menu { position: absolute; top: 120%; right: 0; width: 240px; background: var(--paper); border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15); border: 1px solid var(--line); padding: 16px; z-index: 60; opacity: 0; transform: translateY(10px) scale(0.95); pointer-events: none; transition: all 0.4s var(--ease-bounce); transform-origin: top right; }
+  .user-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
   .user-menu-header { display: flex; gap: 12px; align-items: center; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
   .user-menu-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--bagel-gold), var(--accent-coral)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 500; font-size: 16px; overflow: hidden; flex-shrink: 0; }
   .user-menu-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .user-menu-info p { font-size: 14px; font-weight: 500; color: var(--bagel-deep); margin: 0; line-height: 1.2; }
   .user-menu-info span { font-size: 12px; color: var(--bagel-toast); word-break: break-all; }
-  .user-menu-btn { width: 100%; text-align: left; background: none; border: none; padding: 8px; font-size: 14px; color: var(--bagel-crust); cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 8px; transition: background 0.2s; font-family: 'Outfit', sans-serif; }
-  .user-menu-btn:hover { background: var(--bg-warm); color: var(--accent-coral); }
+  .user-menu-btn { width: 100%; text-align: left; background: none; border: none; padding: 8px; font-size: 14px; color: var(--bagel-crust); cursor: none; display: flex; align-items: center; gap: 10px; border-radius: 8px; transition: all 0.3s var(--ease-premium); font-family: 'Outfit', sans-serif; }
+  .user-menu-btn:hover { background: var(--bg-warm); color: var(--accent-coral); transform: translateX(4px); }
   .user-menu-btn.logout { color: var(--accent-coral); margin-top: 8px; border-top: 1px solid var(--line); padding-top: 12px; border-radius: 0; }
 
   /* Hero */
   .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 120px 0 60px; overflow: hidden; }
   
-  /* Enhanced Parallax Blobs */
+  /* Liquid Morphing Blobs */
   .paint-blob { 
     position: absolute; border-radius: 50% 60% 40% 70% / 60% 40% 70% 50%; 
     filter: blur(60px); opacity: 0.5; pointer-events: none; 
-    will-change: transform;
+    will-change: transform, border-radius;
+    animation: liquid-morph 15s ease-in-out infinite alternate;
+  }
+  @keyframes liquid-morph {
+    0% { border-radius: 50% 60% 40% 70% / 60% 40% 70% 50%; }
+    25% { border-radius: 80% 20% 60% 40% / 40% 60% 30% 70%; }
+    50% { border-radius: 30% 70% 70% 30% / 50% 30% 70% 50%; }
+    75% { border-radius: 60% 40% 30% 70% / 70% 50% 40% 60%; }
+    100% { border-radius: 40% 60% 70% 30% / 30% 70% 50% 50%; }
   }
   
   .hero-content { position: relative; z-index: 10; display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
   @media (min-width: 1024px) { .hero-content { grid-template-columns: 7fr 5fr; } }
   
-  /* Hero Text Wrapper */
   #heroText { 
     will-change: transform, opacity; 
-    transition: transform 0.1s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.1s var(--ease-premium);
   }
   
   .hero-title { font-family: 'Fraunces', serif; font-size: 14vw; line-height: 0.92; letter-spacing: -0.03em; font-weight: 300; }
   @media (min-width: 768px) { .hero-title { font-size: 10vw; } }
   @media (min-width: 1024px) { .hero-title { font-size: 8.2vw; } }
-  .hero-title em { font-style: italic; font-weight: 300; color: var(--accent-coral); }
+  .hero-title em { font-style: italic; font-weight: 300; color: var(--accent-coral); position: relative; display: inline-block; }
+  .hero-title em::after {
+    content: ''; position: absolute; bottom: 5%; left: 0; width: 100%; height: 12%;
+    background: var(--accent-coral); opacity: 0.2; border-radius: 50% 50% 0 0;
+    transform: scaleX(0); transform-origin: left;
+    animation: underline-grow 2s 0.5s var(--ease-premium) forwards;
+  }
+  @keyframes underline-grow { to { transform: scaleX(1); } }
+
   .hero-subtitle { margin-top: 40px; font-size: 18px; max-width: 420px; color: var(--bagel-crust); }
   .btn-group { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 16px; }
   
-  /* Buttons */
-  .btn-primary { background: var(--bagel-deep); color: var(--paper); padding: 16px 32px; border-radius: 9999px; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 12px; cursor: pointer; border: none; position: relative; overflow: hidden; font-family: 'Outfit', sans-serif; transition: background 0.3s; }
-  .btn-primary:hover { background: var(--accent-coral); }
-  .btn-outline { background: transparent; color: var(--bagel-deep); padding: 16px 32px; border-radius: 9999px; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border: 1px solid var(--bagel-crust); font-family: 'Outfit', sans-serif; transition: all 0.3s; }
-  .btn-outline:hover { background: var(--bagel-deep); color: var(--paper); }
+  /* Premium Liquid Fill Buttons */
+  .btn-primary, .btn-outline {
+    padding: 16px 32px; border-radius: 9999px; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 12px; cursor: none; border: none; position: relative; overflow: hidden; font-family: 'Outfit', sans-serif; z-index: 1; transition: color 0.4s var(--ease-premium);
+  }
+  .btn-primary { background: var(--bagel-deep); color: var(--paper); }
+  .btn-outline { background: transparent; color: var(--bagel-deep); border: 1px solid var(--bagel-crust); }
+  
+  .btn-primary::before, .btn-outline::before {
+    content: ''; position: absolute; bottom: -100%; left: -10%; width: 120%; height: 120%;
+    background: var(--accent-coral); border-radius: 50% 50% 0 0;
+    transition: bottom 0.5s var(--ease-premium); z-index: -1;
+  }
+  .btn-outline::before { background: var(--bagel-deep); }
+  .btn-primary:hover::before, .btn-outline:hover::before { bottom: -10%; }
+  .btn-primary:hover, .btn-outline:hover { color: var(--paper); border-color: var(--accent-coral); }
   .btn-outline.active { background: var(--accent-coral); color: white; border-color: var(--accent-coral); }
   
   /* Portrait Wrapper */
-  .portrait-wrapper { 
-    position: relative; 
-    display: none;
-    will-change: transform;
-  }
+  .portrait-wrapper { position: relative; display: none; will-change: transform; cursor: none; }
   @media (min-width: 1024px) { .portrait-wrapper { display: block; } }
   
-  /* Portrait Frame (Clipped Parallax) */
-  .portrait-frame { 
-    position: relative; overflow: hidden; 
-    box-shadow: 0 30px 60px -20px rgba(45,31,18,0.4); 
-    transform: rotate(2deg); 
-    aspect-ratio: 4/5; 
-    background: var(--paper);
-    border: 12px solid var(--paper); 
-  }
-  .portrait-img-3d {
-    width: 100%; height: 100%; 
-    object-fit: cover; display: block; 
-    box-shadow: inset 0 0 80px rgba(45,31,18,0.15);
-    will-change: transform;
-    transition: transform 0.1s cubic-bezier(0.22, 1, 0.36, 1);
-    transform: scale(1.15); 
-  }
-  .price-tag-3d {
-    position: absolute; bottom: -24px; left: -24px; background: var(--paper); padding: 12px 20px; 
-    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); 
-    transform: rotate(-3deg);
-    z-index: 5; 
-  }
-  .tape { 
-    position: absolute; width: 90px; height: 22px; background: rgba(242, 213, 140, 0.7); 
-    top: -8px; left: 50%; transform: translateX(-50%) rotate(-2deg); z-index: 5; 
-  }
+  .portrait-frame { position: relative; overflow: hidden; box-shadow: 0 30px 60px -20px rgba(45,31,18,0.4); transform: rotate(2deg) scale(1); aspect-ratio: 4/5; background: var(--paper); border: 12px solid var(--paper); transition: transform 0.6s var(--ease-bounce); }
+  .portrait-wrapper:hover .portrait-frame { transform: rotate(0deg) scale(1.02); }
+  
+  .portrait-img-3d { width: 100%; height: 100%; object-fit: cover; display: block; box-shadow: inset 0 0 80px rgba(45,31,18,0.15); will-change: transform; transition: transform 0.1s var(--ease-premium); transform: scale(1.15); }
+  
+  .price-tag-3d { position: absolute; bottom: -24px; left: -24px; background: var(--paper); padding: 12px 20px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); transform: rotate(-3deg); z-index: 5; transition: transform 0.4s var(--ease-bounce); }
+  .portrait-wrapper:hover .price-tag-3d { transform: rotate(0deg) translateY(-10px); }
+  
+  .tape { position: absolute; width: 90px; height: 22px; background: rgba(242, 213, 140, 0.7); top: -8px; left: 50%; transform: translateX(-50%) rotate(-2deg); z-index: 5; transition: transform 0.4s var(--ease-bounce); }
+  .portrait-wrapper:hover .tape { transform: translateX(-50%) rotate(0deg) translateY(-4px); }
 
   /* Marquee */
   .marquee-section { padding: 20px 0; background: var(--bagel-deep); color: var(--paper); overflow: hidden; display: flex; border-top: 1px solid var(--bagel-deep); border-bottom: 1px solid var(--bagel-deep); }
@@ -195,7 +228,8 @@
   .artist-section { padding: 100px 0; position: relative; overflow: hidden; }
   .artist-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; position: relative; z-index: 10; }
   @media (min-width: 1024px) { .artist-grid { grid-template-columns: 5fr 7fr; gap: 80px; } }
-  .artist-portrait { transform: rotate(-2deg); display: block; max-width: 500px; margin: 0 auto; }
+  .artist-portrait { transform: rotate(-2deg); display: block; max-width: 500px; margin: 0 auto; transition: transform 0.6s var(--ease-bounce); }
+  .artist-portrait:hover { transform: rotate(1deg) scale(1.02); }
   .artist-portrait img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
   .section-title { font-family: 'Fraunces', serif; font-size: 48px; font-weight: 300; line-height: 0.95; margin-bottom: 32px; }
   @media (min-width: 768px) { .section-title { font-size: 72px; } }
@@ -209,8 +243,10 @@
   .process-section { padding: 120px 0; background: var(--bg-cream); position: relative; }
   .process-grid { display: grid; grid-template-columns: 1fr; gap: 32px; max-width: 1000px; margin: 0 auto; }
   @media (min-width: 768px) { .process-grid { grid-template-columns: repeat(3, 1fr); } }
-  .process-card { text-align: center; padding: 40px 24px; background: var(--paper); border-radius: 16px; box-shadow: 0 10px 30px -15px rgba(45,31,18,0.1); border: 1px solid var(--line); }
-  .process-num { font-family: 'Fraunces', serif; font-size: 56px; font-weight: 300; color: var(--accent-coral); margin-bottom: 16px; line-height: 1; }
+  .process-card { text-align: center; padding: 40px 24px; background: var(--paper); border-radius: 16px; box-shadow: 0 10px 30px -15px rgba(45,31,18,0.1); border: 1px solid var(--line); transition: transform 0.5s var(--ease-bounce), box-shadow 0.5s var(--ease-premium); }
+  .process-card:hover { transform: translateY(-12px); box-shadow: 0 30px 60px -20px rgba(45,31,18,0.2); }
+  .process-num { font-family: 'Fraunces', serif; font-size: 56px; font-weight: 300; color: var(--accent-coral); margin-bottom: 16px; line-height: 1; transition: transform 0.5s var(--ease-bounce); }
+  .process-card:hover .process-num { transform: scale(1.1) rotate(-5deg); }
   .process-title { font-family: 'Fraunces', serif; font-size: 24px; margin-bottom: 12px; font-weight: 400; }
   .process-text { font-size: 15px; color: var(--bagel-crust); line-height: 1.6; }
 
@@ -219,38 +255,61 @@
   .gallery-header { display: flex; flex-direction: column; gap: 32px; margin-bottom: 48px; }
   @media (min-width: 768px) { .gallery-header { flex-direction: row; justify-content: space-between; align-items: flex-end; } }
   .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 48px; }
-  .chip { padding: 6px 14px; border: 1px solid var(--line); border-radius: 9999px; font-size: 12px; cursor: pointer; transition: all 0.3s; background: transparent; color: var(--bagel-deep); font-family: 'Outfit', sans-serif; }
+  .chip { padding: 6px 14px; border: 1px solid var(--line); border-radius: 9999px; font-size: 12px; cursor: none; transition: all 0.3s var(--ease-premium); background: transparent; color: var(--bagel-deep); font-family: 'Outfit', sans-serif; }
   .chip:hover, .chip.active { background: var(--bagel-deep); color: var(--paper); border-color: var(--bagel-deep); }
   
   .gallery-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 32px; }
   @media (min-width: 768px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 1024px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
 
-  .painting-card { transition: transform 0.4s; position: relative; z-index: 2; cursor: pointer; }
+  .painting-card { transition: transform 0.6s var(--ease-bounce); position: relative; z-index: 2; cursor: none; }
   .painting-card:hover { transform: translateY(-8px); }
   .painting-frame { position: relative; overflow: hidden; background: linear-gradient(135deg, var(--sesame), var(--bagel-gold)); box-shadow: 0 20px 40px -20px rgba(45,31,18,0.35); aspect-ratio: 3/4; }
   .painting-frame.landscape { aspect-ratio: 4/3; }
   .painting-frame.square { aspect-ratio: 1/1; }
-  .painting-image { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.8s; pointer-events: none; }
-  .painting-card:hover .painting-image { transform: scale(1.05); }
+  .painting-image { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.8s var(--ease-premium), filter 0.8s var(--ease-premium); pointer-events: none; }
+  .painting-card:hover .painting-image { transform: scale(1.08); filter: brightness(0.7) contrast(1.1); }
   
+  /* Interactive Reveal Overlay */
+  .card-reveal-overlay {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(to top, rgba(45,31,18,0.6) 0%, transparent 60%);
+    opacity: 0; pointer-events: none; transition: opacity 0.5s var(--ease-premium);
+  }
+  .painting-card:hover .card-reveal-overlay { opacity: 1; }
+  .reveal-text {
+    color: var(--paper); font-family: 'Fraunces', serif; font-style: italic; font-size: 18px;
+    transform: translateY(20px); opacity: 0; transition: all 0.5s var(--ease-bounce);
+    border-bottom: 1px solid var(--paper); padding-bottom: 4px;
+  }
+  .painting-card:hover .reveal-text { transform: translateY(0); opacity: 1; transition-delay: 0.1s; }
+
   .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(45,31,18,0.4) 0%, transparent 50%); pointer-events: none; }
   .card-num { position: absolute; top: 16px; left: 16px; font-family: 'Fraunces', serif; font-style: italic; font-size: 11px; color: var(--paper); letter-spacing: 0.1em; z-index: 2; pointer-events: none; }
-  .heart-btn { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; background: rgba(251, 246, 236, 0.9); color: var(--bagel-deep); backdrop-filter: blur(4px); z-index: 2; }
-  .heart-btn.active { background: var(--accent-coral); color: white; }
   
-  .quick-actions { position: absolute; bottom: 16px; left: 16px; right: 16px; display: flex; gap: 8px; opacity: 0; transform: translateY(20px); transition: all 0.4s; z-index: 2; }
+  .heart-btn { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; border: none; cursor: none; display: flex; align-items: center; justify-content: center; background: rgba(251, 246, 236, 0.9); color: var(--bagel-deep); backdrop-filter: blur(4px); z-index: 2; transition: all 0.3s var(--ease-bounce); }
+  .heart-btn:hover { transform: scale(1.1); }
+  .heart-btn.active { background: var(--accent-coral); color: white; animation: pop 0.4s var(--ease-bounce); }
+  
+  @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+
+  .quick-actions { position: absolute; bottom: 16px; left: 16px; right: 16px; display: flex; gap: 8px; opacity: 0; transform: translateY(20px); transition: all 0.4s var(--ease-bounce); z-index: 2; }
   .painting-card:hover .quick-actions { opacity: 1; transform: translateY(0); }
-  .btn-bagel { background: rgba(251, 246, 236, 0.95); color: var(--bagel-deep); border: 1px solid var(--line); padding: 12px; border-radius: 9999px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; flex: 1; font-family: 'Outfit', sans-serif; transition: background 0.3s; }
-  .btn-bagel:hover { background: var(--bagel-deep); color: var(--paper); }
+  .btn-bagel { background: rgba(251, 246, 236, 0.95); color: var(--bagel-deep); border: 1px solid var(--line); padding: 12px; border-radius: 9999px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: none; flex: 1; font-family: 'Outfit', sans-serif; transition: all 0.3s var(--ease-premium); position: relative; overflow: hidden; }
+  .btn-bagel::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: var(--bagel-deep); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.4s ease, height 0.4s ease; z-index: -1; }
+  .btn-bagel:hover::before { width: 300px; height: 300px; }
+  .btn-bagel:hover { color: var(--paper); }
   .btn-bagel.active { background: var(--accent-coral); color: white; border-color: var(--accent-coral); }
+  .btn-bagel.active::before { background: var(--bagel-deep); }
+  
   .btn-icon { width: 48px; height: 48px; padding: 0; display: flex; align-items: center; justify-content: center; flex: none; }
   .btn-bagel i, .heart-btn i { pointer-events: none; }
 
   .card-info { margin-top: 16px; display: flex; justify-content: space-between; gap: 16px; }
   .card-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 300; pointer-events: none; }
   .card-meta { font-size: 12px; color: var(--bagel-toast); margin-top: 4px; pointer-events: none; }
-  .card-price { font-family: 'Fraunces', serif; font-size: 24px; color: var(--accent-coral); font-weight: 300; pointer-events: none; }
+  .card-price { font-family: 'Fraunces', serif; font-size: 24px; color: var(--accent-coral); font-weight: 300; pointer-events: none; transition: transform 0.3s var(--ease-bounce); }
+  .painting-card:hover .card-price { transform: scale(1.05); }
 
   /* Quote Banner */
   .quote-banner { background: var(--bagel-deep); padding: 100px 0; color: var(--paper); text-align: center; }
@@ -262,24 +321,25 @@
   .footer-title { font-family: 'Fraunces', serif; font-size: 48px; font-weight: 300; line-height: 1; }
   .footer-title em { color: var(--accent-coral); }
   .news-form { display: flex; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px; width: 100%; }
-  .news-input { flex: 1; background: transparent; border: none; outline: none; color: var(--bagel-deep); font-family: 'Outfit', sans-serif; font-size: 16px; }
-  .news-btn { background: none; border: none; color: var(--accent-coral); cursor: pointer; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .news-input { flex: 1; background: transparent; border: none; outline: none; color: var(--bagel-deep); font-family: 'Outfit', sans-serif; font-size: 16px; cursor: none; }
+  .news-btn { background: none; border: none; color: var(--accent-coral); cursor: none; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; }
   .footer-bottom { border-top: 1px solid var(--line); padding-top: 32px; display: flex; justify-content: space-between; font-size: 12px; opacity: 0.6; flex-wrap: wrap; gap: 16px; }
 
   /* Drawers & Toast (Fixed) */
   .overlay { position: fixed; inset: 0; z-index: 999; background: rgba(45,31,18,0.5); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.4s; }
   .overlay.open { opacity: 1; pointer-events: auto; }
-  .drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 100vw; background: var(--paper); z-index: 1000; transform: translateX(100%); transition: transform 0.5s; display: flex; flex-direction: column; box-shadow: -20px 0 60px -20px rgba(45,31,18,0.35); }
+  .drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 100vw; background: var(--paper); z-index: 1000; transform: translateX(105%); transition: transform 0.6s var(--ease-bounce); display: flex; flex-direction: column; box-shadow: -20px 0 60px -20px rgba(45,31,18,0.35); }
   .drawer.open { transform: translateX(0); }
   .drawer-header { padding: 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-  .close-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: none; cursor: pointer; color: var(--bagel-deep); display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
-  .close-btn:hover { background: var(--bagel-deep); color: var(--paper); }
+  .close-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: none; cursor: none; color: var(--bagel-deep); display: flex; align-items: center; justify-content: center; transition: all 0.3s var(--ease-bounce); }
+  .close-btn:hover { background: var(--bagel-deep); color: var(--paper); transform: rotate(90deg) scale(1.1); }
   .drawer-body { flex: 1; overflow-y: auto; padding: 24px; }
   .drawer-footer { padding: 24px; border-top: 1px solid var(--line); background: var(--bg-warm); }
   
   /* Cart & Wishlist Items */
-  .cart-item { display: flex; gap: 12px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: stretch; }
-  .cart-item-clickable { display: flex; gap: 16px; flex: 1; cursor: pointer; transition: transform 0.3s; }
+  .cart-item { display: flex; gap: 12px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: stretch; animation: slideIn 0.5s var(--ease-premium); }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  .cart-item-clickable { display: flex; gap: 16px; flex: 1; cursor: none; transition: transform 0.3s var(--ease-premium); }
   .cart-item-clickable:hover { transform: translateX(4px); }
   .cart-item img { width: 90px; height: 90px; object-fit: cover; border-radius: 8px; background: var(--sesame); pointer-events: none; }
   .cart-item-info { flex: 1; display: flex; flex-direction: column; pointer-events: none; }
@@ -289,10 +349,10 @@
   .item-price { font-family: 'Fraunces', serif; font-size: 18px; color: var(--accent-coral); font-weight: 400; margin-top: auto; padding-top: 8px; }
   
   .cart-item-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; justify-content: space-between; }
-  .remove-btn { background: none; border: none; color: var(--bagel-toast); cursor: pointer; font-size: 14px; padding: 4px; align-self: flex-end; }
-  .remove-btn:hover { color: var(--accent-coral); }
-  .item-action-btn { padding: 8px 12px; background: var(--bg-warm); color: var(--bagel-deep); border: 1px solid var(--line); border-radius: 9999px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-  .item-action-btn:hover { background: var(--bagel-deep); color: var(--paper); border-color: var(--bagel-deep); }
+  .remove-btn { background: none; border: none; color: var(--bagel-toast); cursor: none; font-size: 14px; padding: 4px; align-self: flex-end; transition: color 0.3s, transform 0.3s var(--ease-bounce); }
+  .remove-btn:hover { color: var(--accent-coral); transform: rotate(90deg) scale(1.2); }
+  .item-action-btn { padding: 8px 12px; background: var(--bg-warm); color: var(--bagel-deep); border: 1px solid var(--line); border-radius: 9999px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: none; font-family: 'Outfit', sans-serif; transition: all 0.3s var(--ease-premium); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .item-action-btn:hover { background: var(--bagel-deep); color: var(--paper); border-color: var(--bagel-deep); transform: translateY(-2px); }
   .item-action-btn i { pointer-events: none; }
 
   .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: var(--bagel-toast); padding: 40px 20px; }
@@ -300,26 +360,27 @@
   .empty-state p { font-family: 'Fraunces', serif; font-size: 20px; margin-bottom: 4px; color: var(--bagel-crust); }
   .empty-state span { font-size: 14px; }
   
-  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--bagel-deep); color: var(--paper); padding: 14px 24px; border-radius: 9999px; z-index: 4000; transition: transform 0.4s; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--bagel-deep); color: var(--paper); padding: 14px 24px; border-radius: 9999px; z-index: 4000; transition: transform 0.5s var(--ease-bounce); display: flex; align-items: center; gap: 10px; font-size: 14px; }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   /* ===== BIG PREVIEW MODAL (Split Screen with Sticky Footer) ===== */
   .preview-overlay { position: fixed; inset: 0; z-index: 2500; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
   .preview-overlay.open { opacity: 1; pointer-events: auto; }
-  .preview-backdrop { position: absolute; inset: 0; background: rgba(45,31,18,0.7); backdrop-filter: blur(16px); cursor: pointer; }
+  .preview-backdrop { position: absolute; inset: 0; background: rgba(45,31,18,0.7); backdrop-filter: blur(16px); cursor: none; }
   
-  .preview-modal { position: relative; background: var(--paper); border-radius: 24px; width: 100%; max-width: 1100px; height: 90vh; display: grid; grid-template-columns: 1fr; overflow: hidden; transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); z-index: 2; }
-  .preview-overlay.open .preview-modal { transform: scale(1); }
+  .preview-modal { position: relative; background: var(--paper); border-radius: 24px; width: 100%; max-width: 1100px; height: 90vh; display: grid; grid-template-columns: 1fr; overflow: hidden; transform: scale(0.95) translateY(20px); transition: transform 0.5s var(--ease-bounce); box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); z-index: 2; }
+  .preview-overlay.open .preview-modal { transform: scale(1) translateY(0); }
   
   @media (min-width: 900px) { .preview-modal { grid-template-columns: 1.3fr 1fr; } }
   
   .preview-image-side { background: var(--bg-warm); padding: 24px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-  .preview-image-side img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.3); pointer-events: none; }
+  .preview-image-side img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.3); pointer-events: none; animation: fadeIn 1s var(--ease-premium); }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
   
   .preview-details-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
   .preview-scroll-area { flex: 1; overflow-y: auto; padding: 56px 40px 24px; }
   
-  .preview-close { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); cursor: pointer; z-index: 20; display: flex; align-items: center; justify-content: center; color: var(--bagel-deep); transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .preview-close { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); cursor: none; z-index: 20; display: flex; align-items: center; justify-content: center; color: var(--bagel-deep); transition: all 0.3s var(--ease-bounce); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
   .preview-close:hover { background: var(--accent-coral); color: white; transform: rotate(90deg) scale(1.1); border-color: var(--accent-coral); }
   .preview-close i { pointer-events: none; }
   
@@ -330,7 +391,7 @@
   .preview-price { font-family: 'Fraunces', serif; font-size: 36px; color: var(--accent-coral); font-weight: 300; margin-bottom: 0; }
   
   .preview-footer { padding: 24px 40px; background: var(--paper); border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
-  .preview-btn { width: 100%; padding: 16px; border-radius: 9999px; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; }
+  .preview-btn { width: 100%; padding: 16px; border-radius: 9999px; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: none; font-family: 'Outfit', sans-serif; transition: all 0.3s var(--ease-premium); display: flex; align-items: center; justify-content: center; gap: 10px; border: none; position: relative; overflow: hidden; z-index: 1; }
   .preview-btn-primary { background: var(--bagel-deep); color: var(--paper); border: 1px solid var(--bagel-deep); }
   .preview-btn-primary:hover { background: var(--accent-coral); border-color: var(--accent-coral); }
   .preview-btn-outline { background: transparent; color: var(--bagel-deep); border: 1px solid var(--bagel-crust); }
@@ -345,74 +406,79 @@
   /* ===== AUTHENTICATION MODAL ===== */
   .auth-overlay { position: fixed; inset: 0; z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
   .auth-overlay.open { opacity: 1; pointer-events: auto; }
-  .auth-backdrop { position: absolute; inset: 0; background: rgba(45,31,18,0.75); backdrop-filter: blur(16px); cursor: pointer; }
+  .auth-backdrop { position: absolute; inset: 0; background: rgba(45,31,18,0.75); backdrop-filter: blur(16px); cursor: none; }
   
-  .auth-modal { position: relative; background: var(--paper); border-radius: 24px; width: 100%; max-width: 900px; height: auto; max-height: 90vh; display: grid; grid-template-columns: 1fr; overflow: hidden; transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); z-index: 2; }
-  .auth-overlay.open .auth-modal { transform: scale(1); }
+  .auth-modal { position: relative; background: var(--paper); border-radius: 24px; width: 100%; max-width: 900px; height: auto; max-height: 90vh; display: grid; grid-template-columns: 1fr; overflow: hidden; transform: scale(0.95) translateY(20px); transition: transform 0.5s var(--ease-bounce); box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); z-index: 2; }
+  .auth-overlay.open .auth-modal { transform: scale(1) translateY(0); }
   
   @media (min-width: 768px) { .auth-modal { grid-template-columns: 1fr 1fr; } }
   
   .auth-visual-side { background: var(--bagel-deep); color: var(--paper); padding: 48px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; display: none; }
   @media (min-width: 768px) { .auth-visual-side { display: flex; } }
-  .auth-visual-side::before { content: ''; position: absolute; width: 300px; height: 300px; background: var(--accent-coral); border-radius: 50%; filter: blur(80px); opacity: 0.3; top: -50px; right: -50px; }
+  .auth-visual-side::before { content: ''; position: absolute; width: 300px; height: 300px; background: var(--accent-coral); border-radius: 50%; filter: blur(80px); opacity: 0.3; top: -50px; right: -50px; animation: liquid-morph 10s ease-in-out infinite alternate; }
   .auth-visual-side h2 { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 300; line-height: 1.1; margin-bottom: 16px; position: relative; z-index: 2; }
   .auth-visual-side p { font-size: 15px; line-height: 1.6; color: rgba(251,246,236,0.7); position: relative; z-index: 2; }
   
   .auth-form-side { padding: 48px 40px; display: flex; flex-direction: column; justify-content: center; }
-  .auth-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); cursor: pointer; z-index: 20; display: flex; align-items: center; justify-content: center; color: var(--bagel-deep); transition: all 0.3s; }
-  .auth-close:hover { background: var(--accent-coral); color: white; border-color: var(--accent-coral); }
+  .auth-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); cursor: none; z-index: 20; display: flex; align-items: center; justify-content: center; color: var(--bagel-deep); transition: all 0.3s var(--ease-bounce); }
+  .auth-close:hover { background: var(--accent-coral); color: white; border-color: var(--accent-coral); transform: rotate(90deg) scale(1.1); }
   
   .auth-title { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 300; margin-bottom: 8px; color: var(--bagel-deep); }
   .auth-subtitle { font-size: 14px; color: var(--bagel-toast); margin-bottom: 32px; }
   .auth-error { font-size: 12px; color: #e53e3e; margin-bottom: 16px; min-height: 16px; text-align: center; }
   
-  .oauth-btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 14px; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--bagel-deep); margin-bottom: 12px; }
-  .oauth-btn:hover { background: var(--bg-warm); border-color: var(--bagel-crust); }
+  .oauth-btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 14px; cursor: none; font-family: 'Outfit', sans-serif; transition: all 0.3s var(--ease-premium); display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--bagel-deep); margin-bottom: 12px; }
+  .oauth-btn:hover { background: var(--bg-warm); border-color: var(--bagel-crust); transform: translateY(-2px); }
   
   .auth-divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; color: var(--bagel-toast); font-size: 12px; }
   .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
   
   .auth-input-group { margin-bottom: 16px; }
   .auth-input-label { font-size: 12px; color: var(--bagel-toast); margin-bottom: 6px; display: block; }
-  .auth-input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-warm); color: var(--bagel-deep); font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s; }
-  .auth-input:focus { border-color: var(--accent-coral); }
+  .auth-input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-warm); color: var(--bagel-deep); font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s, box-shadow 0.3s; }
+  .auth-input:focus { border-color: var(--accent-coral); box-shadow: 0 0 0 4px rgba(212, 119, 74, 0.15); }
   
-  .auth-submit-btn { width: 100%; padding: 16px; border-radius: 12px; font-size: 14px; letter-spacing: 0.05em; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; border: none; background: var(--bagel-deep); color: var(--paper); margin-top: 8px; }
-  .auth-submit-btn:hover { background: var(--accent-coral); }
+  .auth-submit-btn { width: 100%; padding: 16px; border-radius: 12px; font-size: 14px; letter-spacing: 0.05em; cursor: none; font-family: 'Outfit', sans-serif; transition: all 0.3s var(--ease-premium); border: none; background: var(--bagel-deep); color: var(--paper); margin-top: 8px; position: relative; overflow: hidden; }
+  .auth-submit-btn::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: var(--accent-coral); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.5s ease, height 0.5s ease; z-index: -1; }
+  .auth-submit-btn:hover::before { width: 400px; height: 400px; }
   
   .auth-switch { text-align: center; font-size: 13px; color: var(--bagel-toast); margin-top: 24px; }
-  .auth-switch button { background: none; border: none; color: var(--accent-coral); font-family: 'Outfit', sans-serif; font-weight: 500; cursor: pointer; padding: 0; margin-left: 4px; }
+  .auth-switch button { background: none; border: none; color: var(--accent-coral); font-family: 'Outfit', sans-serif; font-weight: 500; cursor: none; padding: 0; margin-left: 4px; }
   .auth-switch button:hover { text-decoration: underline; }
 
   /* ===== LUXURY SETTINGS MODAL ===== */
-  .settings-card { position: relative; background: var(--paper); border-radius: 24px; width: 100%; max-width: 480px; padding: 48px 40px; box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); z-index: 2; text-align: center; }
-  .auth-overlay.open .settings-card { transform: scale(1); }
+  .settings-card { position: relative; background: var(--paper); border-radius: 24px; width: 100%; max-width: 480px; padding: 48px 40px; box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); transform: scale(0.95) translateY(20px); transition: transform 0.5s var(--ease-bounce); z-index: 2; text-align: center; }
+  .auth-overlay.open .settings-card { transform: scale(1) translateY(0); }
   
   .settings-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 300; color: var(--bagel-deep); margin-bottom: 8px; }
   .settings-subtitle { font-size: 13px; color: var(--bagel-toast); margin-bottom: 32px; }
   
-  .settings-avatar-wrapper { position: relative; width: 120px; height: 120px; margin: 0 auto 32px; cursor: pointer; }
-  .settings-avatar { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, var(--bagel-gold), var(--accent-coral)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 48px; overflow: hidden; box-shadow: 0 10px 30px -10px rgba(45,31,18,0.3); border: 3px solid var(--paper); transition: all 0.3s; }
-  .settings-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .settings-avatar-ring { position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--bagel-gold); pointer-events: none; }
+  .settings-avatar-wrapper { position: relative; width: 120px; height: 120px; margin: 0 auto 32px; cursor: none; }
+  .settings-avatar { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, var(--bagel-gold), var(--accent-coral)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 48px; overflow: hidden; box-shadow: 0 10px 30px -10px rgba(45,31,18,0.3); border: 3px solid var(--paper); transition: all 0.4s var(--ease-bounce); }
+  .settings-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .settings-avatar-ring { position: absolute; inset: -4px; border-radius: 50%; border: 1px dashed var(--bagel-gold); pointer-events: none; animation: spin 20s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
   .settings-avatar-overlay { position: absolute; inset: 0; border-radius: 50%; background: rgba(45,31,18,0.6); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; gap: 6px; opacity: 0; transition: opacity 0.3s; }
   .settings-avatar-wrapper:hover .settings-avatar-overlay { opacity: 1; }
 
   .settings-input-group { text-align: left; margin-bottom: 24px; }
-  .settings-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--line); padding: 12px 4px; font-family: 'Outfit', sans-serif; font-size: 16px; color: var(--bagel-deep); outline: none; transition: border-color 0.3s; }
+  .settings-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--line); padding: 12px 4px; font-family: 'Outfit', sans-serif; font-size: 16px; color: var(--bagel-deep); outline: none; transition: border-color 0.3s; cursor: none; }
   .settings-input:focus { border-bottom-color: var(--accent-coral); }
   .settings-input:read-only { opacity: 0.6; cursor: not-allowed; }
   
-  .settings-save-wrapper { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); margin-top: 0; display: flex; flex-direction: column; gap: 12px; }
+  .settings-save-wrapper { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.5s var(--ease-bounce); margin-top: 0; display: flex; flex-direction: column; gap: 12px; }
   .settings-save-wrapper.is-visible { max-height: 200px; opacity: 1; margin-top: 16px; }
-  .settings-save-btn { width: 100%; padding: 16px; border-radius: 12px; font-size: 14px; letter-spacing: 0.05em; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; border: none; background: var(--bagel-deep); color: var(--paper); }
-  .settings-save-btn:hover { background: var(--accent-coral); }
-  .settings-discard-btn { width: 100%; padding: 12px; border-radius: 12px; font-size: 13px; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; border: none; background: transparent; color: var(--bagel-toast); }
-  .settings-discard-btn:hover { color: #e53e3e; }
+  .settings-save-btn { width: 100%; padding: 16px; border-radius: 12px; font-size: 14px; letter-spacing: 0.05em; cursor: none; font-family: 'Outfit', sans-serif; transition: all 0.3s var(--ease-premium); border: none; background: var(--bagel-deep); color: var(--paper); position: relative; overflow: hidden; }
+  .settings-save-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--accent-coral); transition: left 0.4s var(--ease-premium); }
+  .settings-save-btn:hover::before { left: 0; }
+  .settings-discard-btn { width: 100%; padding: 12px; border-radius: 12px; font-size: 13px; cursor: none; font-family: 'Outfit', sans-serif; transition: all 0.3s; border: none; background: transparent; color: var(--bagel-toast); }
+  .settings-discard-btn:hover { color: #e53e3e; transform: scale(0.98); }
 
 </style>
 </head>
 <body>
+
+<div class="custom-cursor" id="customCursor"></div>
 
 <header>
   <div class="header-inner">
@@ -456,7 +522,7 @@
           </a>
         </div>
       </div>
-      <div class="portrait-wrapper" id="heroPortrait" data-action="open-preview" data-id="8" style="cursor: pointer;">
+      <div class="portrait-wrapper" id="heroPortrait" data-action="open-preview" data-id="8">
         <div class="tape"></div>
         <div class="portrait-frame">
           <img src="https://picsum.photos/seed/art8/600/780.jpg" alt="Aurum painting - Price: ₹95,000" class="portrait-img-3d">
@@ -521,7 +587,6 @@
   </div>
 </section>
 
-<!-- Process Section / The Journey -->
 <section id="journey" class="process-section">
   <div class="container">
     <div class="text-center" style="margin-bottom: 64px;">
@@ -745,6 +810,20 @@ let currentPreviewId = null;
 
 const formatPrice = (val) => '₹' + val.toLocaleString('en-IN');
 
+// ===== PREMIUM CUSTOM CURSOR =====
+const cursor = document.getElementById('customCursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+document.addEventListener('mouseover', e => {
+  if (e.target.closest('button, a, .painting-card, .cart-item-clickable, input, .logo, .icon-btn, .nav-link')) {
+    cursor.classList.add('hovering');
+  } else {
+    cursor.classList.remove('hovering');
+  }
+});
+
 // ===== ENHANCED MULTI-LAYER PARALLAX LOGIC =====
 const heroPortrait = document.getElementById('heroPortrait');
 const heroText = document.getElementById('heroText');
@@ -776,21 +855,17 @@ if (heroPortrait && heroText) {
 
         const scrollY = window.scrollY;
 
-        // 1. Painting Image inside frame (moves with mouse and scroll)
         const moveX = currentX * -15; 
         const moveY = currentY * -15 - scrollY * 0.3; 
         img.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.15)`;
 
-        // 2. Hero Text (moves opposite to mouse for depth, moves up and fades on scroll)
         const textX = currentX * 12;
         const textY = currentY * 12 - scrollY * 0.5;
         heroText.style.transform = `translate(${textX}px, ${textY}px)`;
         heroText.style.opacity = Math.max(0, 1 - scrollY / 500);
 
-        // 3. Portrait Wrapper (moves slightly with scroll to separate from text)
         heroPortrait.style.transform = `translateY(${-scrollY * 0.1}px)`;
 
-        // 4. Background Blobs (atmospheric depth)
         blobs.forEach((blob, index) => {
             const depth = index === 0 ? 0.5 : -0.4; 
             const blobScroll = index === 0 ? 0.1 : -0.15;
@@ -803,22 +878,12 @@ if (heroPortrait && heroText) {
 }
 
 // ===== AUTH LOGIC =====
-function getUsers() {
-  return JSON.parse(localStorage.getItem('sketra_users') || '[]');
-}
+function getUsers() { return JSON.parse(localStorage.getItem('sketra_users') || '[]'); }
+function saveUsers(users) { localStorage.setItem('sketra_users', JSON.stringify(users)); }
 
-function saveUsers(users) {
-  localStorage.setItem('sketra_users', JSON.stringify(users));
-}
-
-function renderAvatarHTML(user, sizeClass = '') {
+function renderAvatarHTML(user) {
   const pic = user.tempProfilePic || user.profilePic;
-  if (pic) {
-    return `<img src="${pic}" alt="${user.name || 'User'}">`;
-  } else {
-    const initial = user && user.name ? user.name.charAt(0).toUpperCase() : 'U';
-    return initial;
-  }
+  return pic ? `<img src="${pic}" alt="${user.name || 'User'}">` : (user && user.name ? user.name.charAt(0).toUpperCase() : 'U');
 }
 
 function updateAuthUI() {
@@ -836,52 +901,31 @@ function updateAuthUI() {
             <span>${currentUser.email}</span>
           </div>
         </div>
-        <button class="user-menu-btn" data-action="open-settings">
-          <i class="fa-solid fa-gear"></i> Account Settings
-        </button>
-        <button class="user-menu-btn logout" data-action="logout">
-          <i class="fa-solid fa-right-from-bracket"></i> Log out
-        </button>
+        <button class="user-menu-btn" data-action="open-settings"><i class="fa-solid fa-gear"></i> Account Settings</button>
+        <button class="user-menu-btn logout" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
       </div>
     `;
   } else {
-    authHTML = `
-      <button class="icon-btn" data-action="open-auth" aria-label="Sign In">
-        <i class="fa-regular fa-user"></i>
-      </button>
-    `;
+    authHTML = `<button class="icon-btn" data-action="open-auth" aria-label="Sign In"><i class="fa-regular fa-user"></i></button>`;
   }
 
   wrap.innerHTML = `
     ${authHTML}
-    <button class="icon-btn" data-action="open-drawer" data-target="wishlist">
-      <i class="fa-regular fa-heart"></i>
-      <span class="badge-count" id="wishlistCount">0</span>
-    </button>
-    <button class="icon-btn" data-action="open-drawer" data-target="cart">
-      <i class="fa-solid fa-bag-shopping"></i>
-      <span class="badge-count" id="cartCount">0</span>
-    </button>
+    <button class="icon-btn" data-action="open-drawer" data-target="wishlist"><i class="fa-regular fa-heart"></i><span class="badge-count" id="wishlistCount">0</span></button>
+    <button class="icon-btn" data-action="open-drawer" data-target="cart"><i class="fa-solid fa-bag-shopping"></i><span class="badge-count" id="cartCount">0</span></button>
   `;
   updateBadges();
 }
 
-function openAuth() {
-  document.getElementById('authOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
+function openAuth() { document.getElementById('authOverlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
 function closeAuth() {
   document.getElementById('authOverlay').classList.remove('open');
   document.getElementById('authError').textContent = '';
-  if (!document.getElementById('previewOverlay').classList.contains('open') && !document.getElementById('settingsOverlay').classList.contains('open')) {
-    document.body.style.overflow = '';
-  }
+  if (!document.getElementById('previewOverlay').classList.contains('open') && !document.getElementById('settingsOverlay').classList.contains('open')) document.body.style.overflow = '';
 }
 
 function toggleAuthMode() {
   authMode = authMode === 'login' ? 'signup' : 'login';
-  
   const title = document.getElementById('authTitle');
   const subtitle = document.getElementById('authSubtitle');
   const submitBtn = document.getElementById('authSubmitBtn');
@@ -892,23 +936,13 @@ function toggleAuthMode() {
   const visualText = document.getElementById('authVisualText');
 
   if (authMode === 'signup') {
-    title.textContent = 'Create account';
-    subtitle.textContent = 'Join the studio to begin collecting.';
-    submitBtn.textContent = 'Sign Up';
-    switchText.textContent = 'Already have an account?';
-    switchBtn.textContent = 'Sign in';
-    nameGroup.style.display = 'block';
-    visualTitle.textContent = 'Begin your collection.';
-    visualText.textContent = 'Create an account to save your favorite pieces, track your orders, and bring a quiet hour into your home.';
+    title.textContent = 'Create account'; subtitle.textContent = 'Join the studio to begin collecting.'; submitBtn.textContent = 'Sign Up';
+    switchText.textContent = 'Already have an account?'; switchBtn.textContent = 'Sign in'; nameGroup.style.display = 'block';
+    visualTitle.textContent = 'Begin your collection.'; visualText.textContent = 'Create an account to save your favorite pieces, track your orders, and bring a quiet hour into your home.';
   } else {
-    title.textContent = 'Welcome back';
-    subtitle.textContent = 'Sign in to continue your collection.';
-    submitBtn.textContent = 'Sign In';
-    switchText.textContent = "Don't have an account?";
-    switchBtn.textContent = 'Sign up';
-    nameGroup.style.display = 'none';
-    visualTitle.textContent = 'Welcome back to the studio.';
-    visualText.textContent = 'Sign in to see your cart, wishlist, and track your quiet hours.';
+    title.textContent = 'Welcome back'; subtitle.textContent = 'Sign in to continue your collection.'; submitBtn.textContent = 'Sign In';
+    switchText.textContent = "Don't have an account?"; switchBtn.textContent = 'Sign up'; nameGroup.style.display = 'none';
+    visualTitle.textContent = 'Welcome back to the studio.'; visualText.textContent = 'Sign in to see your cart, wishlist, and track your quiet hours.';
   }
 }
 
@@ -918,163 +952,85 @@ function handleAuthSubmit(e) {
   const password = document.getElementById('authPassword').value;
   const name = document.getElementById('authName').value;
   const errorEl = document.getElementById('authError');
-  
   if (!email || !password) return;
-
   let users = getUsers();
   
   if (authMode === 'signup') {
-    if (users.find(u => u.email === email)) {
-      errorEl.textContent = 'An account with this email already exists.';
-      return;
-    }
+    if (users.find(u => u.email === email)) { errorEl.textContent = 'An account with this email already exists.'; return; }
     currentUser = { name: name || 'Art Collector', email: email, password: password };
-    users.push(currentUser);
-    saveUsers(users);
+    users.push(currentUser); saveUsers(users);
   } else {
     const user = users.find(u => u.email === email && u.password === password);
-    if (!user) {
-      errorEl.textContent = 'Invalid email or password. Please try again.';
-      return;
-    }
+    if (!user) { errorEl.textContent = 'Invalid email or password. Please try again.'; return; }
     currentUser = user;
   }
-  
   localStorage.setItem('sketra_user', JSON.stringify(currentUser));
-  closeAuth();
-  showToast(`Welcome, ${currentUser.name}!`);
-  updateAuthUI();
+  closeAuth(); showToast(`Welcome, ${currentUser.name}!`); updateAuthUI();
 }
 
 function handleOAuth(provider) {
   const email = window.prompt(`Sign in with ${provider === 'google' ? 'Google' : 'Apple'}\n\nEnter the email associated with your ${provider === 'google' ? 'Google' : 'Apple'} account:`);
   if (!email) return;
-
-  let users = getUsers();
-  let user = users.find(u => u.email === email);
-  
+  let users = getUsers(); let user = users.find(u => u.email === email);
   if (!user) {
-    user = { 
-      name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1), 
-      email: email, 
-      provider: provider 
-    };
-    users.push(user);
-    saveUsers(users);
+    user = { name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1), email: email, provider: provider };
+    users.push(user); saveUsers(users);
   }
-  
-  currentUser = user;
-  localStorage.setItem('sketra_user', JSON.stringify(currentUser));
-  closeAuth();
-  showToast(`Signed in as ${currentUser.email}`);
-  updateAuthUI();
+  currentUser = user; localStorage.setItem('sketra_user', JSON.stringify(currentUser));
+  closeAuth(); showToast(`Signed in as ${currentUser.email}`); updateAuthUI();
 }
 
-function logout() {
-  currentUser = null;
-  localStorage.removeItem('sketra_user');
-  showToast('Logged out successfully');
-  updateAuthUI();
-}
+function logout() { currentUser = null; localStorage.removeItem('sketra_user'); showToast('Logged out successfully'); updateAuthUI(); }
 
 // ===== SETTINGS LOGIC =====
 function openSettings() {
   document.getElementById('settingsName').value = currentUser.name || '';
   document.getElementById('settingsEmail').value = currentUser.email || '';
-  if (currentUser.tempProfilePic) {
-    delete currentUser.tempProfilePic;
-  }
-  renderSettingsProfilePic();
-  checkSettingsDirty();
-  document.getElementById('settingsOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  if (currentUser.tempProfilePic) delete currentUser.tempProfilePic;
+  renderSettingsProfilePic(); checkSettingsDirty();
+  document.getElementById('settingsOverlay').classList.add('open'); document.body.style.overflow = 'hidden';
 }
-
 function closeSettings() {
-  if (currentUser.tempProfilePic) {
-    delete currentUser.tempProfilePic;
-    updateAuthUI();
-  }
+  if (currentUser.tempProfilePic) { delete currentUser.tempProfilePic; updateAuthUI(); }
   document.getElementById('settingsOverlay').classList.remove('open');
-  if (!document.getElementById('authOverlay').classList.contains('open') && !document.getElementById('previewOverlay').classList.contains('open')) {
-    document.body.style.overflow = '';
-  }
+  if (!document.getElementById('authOverlay').classList.contains('open') && !document.getElementById('previewOverlay').classList.contains('open')) document.body.style.overflow = '';
 }
-
 function discardSettings() {
-  if (currentUser.tempProfilePic) {
-    delete currentUser.tempProfilePic;
-  }
+  if (currentUser.tempProfilePic) delete currentUser.tempProfilePic;
   document.getElementById('settingsName').value = currentUser.name || '';
-  renderSettingsProfilePic();
-  updateAuthUI();
-  checkSettingsDirty();
-  showToast('Changes discarded');
+  renderSettingsProfilePic(); updateAuthUI(); checkSettingsDirty(); showToast('Changes discarded');
 }
-
 function renderSettingsProfilePic() {
   const picEl = document.getElementById('settingsProfilePic');
-  if (currentUser.tempProfilePic || currentUser.profilePic) {
-    picEl.innerHTML = `<img src="${currentUser.tempProfilePic || currentUser.profilePic}" alt="Profile">`;
-  } else {
-    picEl.innerHTML = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U';
-  }
+  if (currentUser.tempProfilePic || currentUser.profilePic) picEl.innerHTML = `<img src="${currentUser.tempProfilePic || currentUser.profilePic}" alt="Profile">`;
+  else picEl.innerHTML = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U';
 }
-
 function checkSettingsDirty() {
   const nameInput = document.getElementById('settingsName');
   const saveWrapper = document.getElementById('settingsSaveWrapper');
-  
   const nameChanged = nameInput.value !== (currentUser.name || '');
   const picChanged = !!currentUser.tempProfilePic;
-  
-  if (nameChanged || picChanged) {
-    saveWrapper.classList.add('is-visible');
-  } else {
-    saveWrapper.classList.remove('is-visible');
-  }
+  if (nameChanged || picChanged) saveWrapper.classList.add('is-visible');
+  else saveWrapper.classList.remove('is-visible');
 }
-
 document.getElementById('settingsName').addEventListener('input', checkSettingsDirty);
-
 document.getElementById('profilePicInput').addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = (event) => {
-      currentUser.tempProfilePic = event.target.result;
-      renderSettingsProfilePic();
-      updateAuthUI();
-      checkSettingsDirty();
-    };
+    reader.onload = (event) => { currentUser.tempProfilePic = event.target.result; renderSettingsProfilePic(); updateAuthUI(); checkSettingsDirty(); };
     reader.readAsDataURL(file);
   }
 });
-
 function handleSettingsSubmit(e) {
   e.preventDefault();
-  const newName = document.getElementById('settingsName').value || 'User';
-  currentUser.name = newName;
-  
-  if (currentUser.tempProfilePic) {
-    currentUser.profilePic = currentUser.tempProfilePic;
-    delete currentUser.tempProfilePic;
-  }
-  
+  currentUser.name = document.getElementById('settingsName').value || 'User';
+  if (currentUser.tempProfilePic) { currentUser.profilePic = currentUser.tempProfilePic; delete currentUser.tempProfilePic; }
   localStorage.setItem('sketra_user', JSON.stringify(currentUser));
-  
-  let users = getUsers();
-  const idx = users.findIndex(u => u.email === currentUser.email);
-  if (idx !== -1) {
-    users[idx] = currentUser;
-    saveUsers(users);
-  }
-  
-  checkSettingsDirty();
-  showToast('Profile updated successfully');
-  updateAuthUI();
+  let users = getUsers(); const idx = users.findIndex(u => u.email === currentUser.email);
+  if (idx !== -1) { users[idx] = currentUser; saveUsers(users); }
+  checkSettingsDirty(); showToast('Profile updated successfully'); updateAuthUI();
 }
-
 
 // ===== GALLERY & CART LOGIC =====
 function renderGallery() {
@@ -1087,6 +1043,7 @@ function renderGallery() {
       <article class="painting-card" aria-label="${p.title}, Price: ${formatPrice(p.price)}">
         <div class="painting-frame ${p.aspect === 'landscape' ? 'landscape' : p.aspect === 'square' ? 'square' : ''}" data-action="open-preview" data-id="${p.id}">
           <img src="https://picsum.photos/seed/${p.seed}/600/700.jpg" alt="${p.title} painting, Price: ${formatPrice(p.price)}" class="painting-image">
+          <div class="card-reveal-overlay"><span class="reveal-text">View Artwork</span></div>
           <div class="card-overlay"></div>
           <div class="card-num">N° ${String(p.id).padStart(3, '0')} · ${p.year}</div>
           <button class="heart-btn ${inWishlist ? 'active' : ''}" data-action="toggle-wishlist" data-id="${p.id}">
@@ -1113,18 +1070,12 @@ function renderGallery() {
 function renderCart() {
   const wrap = document.getElementById('cartItems');
   if (cart.length === 0) {
-    wrap.innerHTML = `<div class="empty-state">
-      <i class="fa-solid fa-bag-shopping"></i>
-      <p>Your cart is empty.</p>
-      <span>Wander the gallery — something may find you.</span>
-    </div>`;
-    document.getElementById('cartTotal').textContent = '₹0';
-    return;
+    wrap.innerHTML = `<div class="empty-state"><i class="fa-solid fa-bag-shopping"></i><p>Your cart is empty.</p><span>Wander the gallery — something may find you.</span></div>`;
+    document.getElementById('cartTotal').textContent = '₹0'; return;
   }
   wrap.innerHTML = cart.map(id => {
     const p = PAINTINGS.find(x => x.id === id);
-    return `
-    <div class="cart-item">
+    return `<div class="cart-item">
       <div class="cart-item-clickable" data-action="open-preview" data-id="${p.id}">
         <img src="https://picsum.photos/seed/${p.seed}/200/200.jpg" alt="${p.title} - Price: ${formatPrice(p.price)}">
         <div class="cart-item-info">
@@ -1136,9 +1087,7 @@ function renderCart() {
       </div>
       <div class="cart-item-actions">
         <button class="remove-btn" data-action="remove-from-cart" data-id="${p.id}" aria-label="Remove"><i class="fa-solid fa-xmark"></i></button>
-        <button data-action="move-to-wishlist" data-id="${p.id}" class="item-action-btn">
-          <i class="fa-regular fa-heart"></i> Wishlist
-        </button>
+        <button data-action="move-to-wishlist" data-id="${p.id}" class="item-action-btn"><i class="fa-regular fa-heart"></i> Wishlist</button>
       </div>
     </div>`;
   }).join('');
@@ -1149,17 +1098,11 @@ function renderCart() {
 function renderWishlist() {
   const wrap = document.getElementById('wishlistItems');
   if (wishlist.length === 0) {
-    wrap.innerHTML = `<div class="empty-state">
-      <i class="fa-regular fa-heart"></i>
-      <p>No saved pieces yet.</p>
-      <span>Tap the heart on any painting to keep it close.</span>
-    </div>`;
-    return;
+    wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-heart"></i><p>No saved pieces yet.</p><span>Tap the heart on any painting to keep it close.</span></div>`; return;
   }
   wrap.innerHTML = wishlist.map(id => {
     const p = PAINTINGS.find(x => x.id === id);
-    return `
-    <div class="cart-item">
+    return `<div class="cart-item">
       <div class="cart-item-clickable" data-action="open-preview" data-id="${p.id}">
         <img src="https://picsum.photos/seed/${p.seed}/200/200.jpg" alt="${p.title} - Price: ${formatPrice(p.price)}">
         <div class="cart-item-info">
@@ -1171,9 +1114,7 @@ function renderWishlist() {
       </div>
       <div class="cart-item-actions">
         <button class="remove-btn" data-action="remove-from-wishlist" data-id="${p.id}" aria-label="Remove"><i class="fa-solid fa-xmark"></i></button>
-        <button data-action="move-to-cart" data-id="${p.id}" class="item-action-btn">
-          <i class="fa-solid fa-bag-shopping"></i> Cart
-        </button>
+        <button data-action="move-to-cart" data-id="${p.id}" class="item-action-btn"><i class="fa-solid fa-bag-shopping"></i> Cart</button>
       </div>
     </div>`;
   }).join('');
@@ -1183,44 +1124,60 @@ function updateBadges() {
   const c = document.getElementById('cartCount'), w = document.getElementById('wishlistCount');
   if(!c || !w) return;
   c.textContent = cart.length; w.textContent = wishlist.length;
-  c.classList.toggle('show', cart.length > 0);
-  w.classList.toggle('show', wishlist.length > 0);
+  c.classList.toggle('show', cart.length > 0); w.classList.toggle('show', wishlist.length > 0);
+}
+
+// Helper to just update the footer without resetting scroll
+function updatePreviewFooter(id) {
+  const p = PAINTINGS.find(x => x.id === id);
+  if (!p) return;
+  const inWishlist = wishlist.includes(p.id);
+  const inCart = cart.includes(p.id);
+  
+  document.getElementById('previewFooter').innerHTML = `
+    <button class="preview-btn preview-btn-primary ${inCart ? 'active' : ''}" data-action="${inCart ? 'remove-from-cart' : 'add-to-cart'}" data-id="${p.id}">
+      <i class="fa-solid ${inCart ? 'fa-check' : 'fa-bag-shopping'}"></i> ${inCart ? 'In Cart (Remove?)' : 'Add to Cart'}
+    </button>
+    <button class="preview-btn preview-btn-outline ${inWishlist ? 'active' : ''}" data-action="toggle-wishlist" data-id="${p.id}">
+      <i class="fa-solid ${inWishlist ? 'fa-heart' : 'fa-heart-circle-plus'}"></i> ${inWishlist ? 'Saved to Wishlist' : 'Save to Wishlist'}
+    </button>
+  `;
 }
 
 function addToCart(id) {
   if (!cart.includes(id)) { cart.push(id); saveState(); showToast('Added to cart'); }
   updateBadges(); renderGallery(); renderCart();
-  if (currentPreviewId === id) openPreview(id); 
+  if (currentPreviewId === id) updatePreviewFooter(id); 
 }
 function removeFromCart(id) { 
   cart = cart.filter(x => x !== id); 
   saveState(); updateBadges(); renderGallery(); renderCart(); 
-  if (currentPreviewId === id) openPreview(id); 
+  if (currentPreviewId === id) updatePreviewFooter(id); 
 }
 function toggleWishlist(id) {
   if (wishlist.includes(id)) { wishlist = wishlist.filter(x => x !== id); }
   else { wishlist.push(id); showToast('Saved to wishlist', 'heart'); }
   saveState(); updateBadges(); renderGallery(); renderWishlist();
-  if (currentPreviewId === id) openPreview(id); 
+  if (currentPreviewId === id) updatePreviewFooter(id); 
 }
 function removeFromWishlist(id) { 
   wishlist = wishlist.filter(x => x !== id); 
   saveState(); updateBadges(); renderGallery(); renderWishlist(); 
-  if (currentPreviewId === id) openPreview(id); 
+  if (currentPreviewId === id) updatePreviewFooter(id); 
 }
 function moveToCart(id) { 
   if (!cart.includes(id)) { cart.push(id); }
   wishlist = wishlist.filter(x => x !== id); 
   saveState(); updateBadges(); renderGallery(); renderCart(); renderWishlist(); 
   showToast('Moved to cart'); 
-  if (currentPreviewId === id) openPreview(id); 
+  if (currentPreviewId === id) updatePreviewFooter(id); 
 }
 function moveToWishlist(id) {
   if (!wishlist.includes(id)) { wishlist.push(id); }
   cart = cart.filter(x => x !== id);
   saveState(); updateBadges(); renderGallery(); renderCart(); renderWishlist();
   showToast('Moved to wishlist', 'heart');
-  if (currentPreviewId === id) openPreview(id); 
+  if (currentPreviewId === id) updatePreviewFooter(id); 
 }
 function moveAllToCart() { 
   wishlist.forEach(id => { if(!cart.includes(id)) cart.push(id); }); 
@@ -1229,8 +1186,7 @@ function moveAllToCart() {
   saveState(); updateBadges(); renderGallery(); renderCart(); renderWishlist(); 
 }
 function openDrawer(type) {
-  closeDrawers();
-  closePreview();
+  closeDrawers(); closePreview();
   if (type === 'cart') { renderCart(); document.getElementById('cartDrawer').classList.add('open'); }
   else { renderWishlist(); document.getElementById('wishlistDrawer').classList.add('open'); }
   document.getElementById('overlay').classList.add('open');
@@ -1264,14 +1220,7 @@ function openPreview(id) {
     <p class="preview-price">${formatPrice(p.price)}</p>
   `;
   
-  document.getElementById('previewFooter').innerHTML = `
-    <button class="preview-btn preview-btn-primary ${inCart ? 'active' : ''}" data-action="${inCart ? 'remove-from-cart' : 'add-to-cart'}" data-id="${p.id}">
-      <i class="fa-solid ${inCart ? 'fa-check' : 'fa-bag-shopping'}"></i> ${inCart ? 'In Cart (Remove?)' : 'Add to Cart'}
-    </button>
-    <button class="preview-btn preview-btn-outline ${inWishlist ? 'active' : ''}" data-action="toggle-wishlist" data-id="${p.id}">
-      <i class="fa-solid ${inWishlist ? 'fa-heart' : 'fa-heart-circle-plus'}"></i> ${inWishlist ? 'Saved to Wishlist' : 'Save to Wishlist'}
-    </button>
-  `;
+  updatePreviewFooter(id);
   
   document.getElementById('previewOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1311,7 +1260,6 @@ document.addEventListener('click', function(e) {
   else if (action === 'move-all-to-cart') moveAllToCart();
   else if (action === 'open-preview') openPreview(id);
   else if (action === 'close-preview') closePreview();
-  
   else if (action === 'open-auth') openAuth();
   else if (action === 'close-auth') closeAuth();
   else if (action === 'toggle-auth-mode') toggleAuthMode();
@@ -1322,7 +1270,6 @@ document.addEventListener('click', function(e) {
   else if (action === 'open-settings') openSettings();
   else if (action === 'close-settings') closeSettings();
   else if (action === 'discard-settings') discardSettings();
-  
   else if (action === 'checkout') {
     if (cart.length === 0) showToast('Cart is empty');
     else showToast('Checkout is a demo here');
@@ -1344,10 +1291,7 @@ document.addEventListener('submit', function(e) {
 
 document.addEventListener('keydown', (e) => { 
   if (e.key === 'Escape') { 
-    closeDrawers(); 
-    closePreview(); 
-    closeAuth();
-    closeSettings();
+    closeDrawers(); closePreview(); closeAuth(); closeSettings();
   } 
 });
 
